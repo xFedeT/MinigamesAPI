@@ -1,1 +1,4 @@
 rootProject.name = 'MinigamesAPI'
+
+include 'api'
+include 'plugin'

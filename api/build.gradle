@@ -1,0 +1,26 @@
+plugins {
+    id 'maven-publish'
+}
+
+tasks.register('sourceJar', Jar) {
+    from sourceSets.main.allJava
+}
+
+publishing {
+    def artifact = "api"
+    def group = 'it.fedet.minigames'
+
+    publications {
+        maven(MavenPublication) {
+            groupId = group
+            artifactId = artifact
+            version
+
+            from components.java
+        }
+    }
+
+    repositories {
+
+    }
+}

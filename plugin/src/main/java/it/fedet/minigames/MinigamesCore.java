@@ -1,8 +1,8 @@
-package it.fedet.minigames.api;
+package it.fedet.minigames;
 
 import org.bukkit.plugin.java.JavaPlugin;
 
-public final class MinigamesAPI extends JavaPlugin {
+public final class MinigamesCore extends JavaPlugin {
 
     @Override
     public void onEnable() {
