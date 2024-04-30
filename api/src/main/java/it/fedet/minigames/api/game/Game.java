@@ -5,9 +5,15 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 public abstract class Game<T extends JavaPlugin> {
 
+    private final T plugin;
+
     private int gameId;
 
     public MinigamePhase<T> currentPhase = initialPhase();
+
+    public Game(T plugin) {
+        this.plugin = plugin;
+    }
 
     public void tick() {
         currentPhase.tick();
@@ -33,4 +39,11 @@ public abstract class Game<T extends JavaPlugin> {
 
     public abstract MinigamePhase<T> initialPhase();
 
+    public T getPlugin() {
+        return plugin;
+    }
+
+    public MinigamePhase<T> getCurrentPhase() {
+        return currentPhase;
+    }
 }

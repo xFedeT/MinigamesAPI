@@ -1,21 +1,32 @@
 package it.fedet.minigames.game;
 
+import it.fedet.minigames.MinigamesCore;
 import it.fedet.minigames.api.game.Game;
+import org.bukkit.entity.Player;
+import org.bukkit.metadata.MetadataValue;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class GameService implements it.fedet.minigames.api.GameService {
+public class GameService implements it.fedet.minigames.api.services.GameService {
 
     private final Map<Integer, Game> activeGames = new ConcurrentHashMap<>();
 
     private final Thread gameThread = new Thread(() -> activeGames.forEach((id, game) -> game.tick()));
 
-    public GameService() {
+    public GameService(MinigamesCore plugin) {}
+
+    @Override
+    public void start() {
         gameThread.start();
     }
 
+    @Override
+    public void stop() {
+
+    }
 
     @Override
     public boolean registerGame(Game game) {
@@ -32,7 +43,7 @@ public class GameService implements it.fedet.minigames.api.GameService {
     }
 
     @Override
-    public Game getGame(int id) {
+    public Game getGameBy(int id) {
         return activeGames.get(id);
     }
 
@@ -40,5 +51,15 @@ public class GameService implements it.fedet.minigames.api.GameService {
     public Map<Integer, Game> getActiveGames() {
         return new HashMap<>(activeGames);
     }
+
+    @Override
+    public Game getGameBy(Player player) {
+        List<MetadataValue> values = player.getMetadata("game-id");
+        if (values.isEmpty())
+            return null;
+
+        return activeGames.get(values.get(0).asInt());
+    }
+
 
 }
