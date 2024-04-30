@@ -1,0 +1,5 @@
+name: MinigamesAPI
+version: '${version}'
+main: it.fedet.minigames.api.MinigamesAPI
+prefix: MinigamesAPI
+authors: [xFedeT]
