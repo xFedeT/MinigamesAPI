@@ -1,4 +1,5 @@
 rootProject.name = 'MinigamesAPI'
 
+include 'sumo'
 include 'api'
 include 'plugin'
