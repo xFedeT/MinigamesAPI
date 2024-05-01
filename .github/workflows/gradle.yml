@@ -43,6 +43,6 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ github.token }}
         run: |
-          version=v$(./gradlew -q printVersion)
+          version=v$(sh gradlew -q printVersion)
           tag=$(git describe --tags --abbrev=0)
-           ./gradlew -q printChangeLog | gh release create $tag --latest -t "$version" -F - ${{ github.workspace }}/plugin/build/libs/*.jar ${{ github.workspace }}/api/build/libs/*.jar
+           sh gradlew -q printChangeLog | gh release create $tag --latest -t "$version" -F - ${{ github.workspace }}/plugin/build/libs/*.jar ${{ github.workspace }}/api/build/libs/*.jar
