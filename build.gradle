@@ -38,6 +38,16 @@ subprojects {
 
     repositories {
         mavenCentral()
+        maven {
+            url "https://repo.coralmc.it/releases"
+            credentials {
+                username "$mavenUser"
+                password "$mavenPassword"
+            }
+            authentication {
+                basic(BasicAuthentication)
+            }
+        }
 
         maven { url = "https://repo.viaversion.com" }
         maven {
@@ -57,9 +67,11 @@ subprojects {
         api 'fr.minuskube.inv:smart-invs:1.2.7' transitive false
         api 'xyz.xenondevs:particle:1.8.1'
 
+        compileOnly 'ch.jalu:configme:1.4.1'
         compileOnly 'net.luckperms:api:5.4'
         compileOnly 'com.github.decentsoftware-eu:decentholograms:2.8.6'
 
+        implementation "it.ytnoos.loadit:loadit:1.2.2-SNAPSHOT"
         implementation "com.github.ben-manes.caffeine:caffeine:3.1.8"
         implementation 'io.github.bananapuncher714:nbteditor:7.18.5'
         implementation 'com.github.missionarydev:board:055208be5d'

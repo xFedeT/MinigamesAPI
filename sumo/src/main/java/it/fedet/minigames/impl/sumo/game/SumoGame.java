@@ -11,7 +11,6 @@ public class SumoGame extends Game<Sumo> {
         super(game);
     }
 
-
     @Override
     public MinigamePhase<Sumo> initialPhase() {
         return new WaitingPlayerPhase(this);

@@ -2,7 +2,6 @@ package it.fedet.minigames.board;
 
 import it.fedet.minigames.MinigamesCore;
 import it.fedet.minigames.api.game.Game;
-import it.fedet.minigames.api.services.Service;
 import it.fedet.minigames.game.GameService;
 import me.missionary.board.BoardManager;
 import me.missionary.board.provider.BoardProvider;
@@ -12,7 +11,7 @@ import org.bukkit.entity.Player;
 
 import java.util.List;
 
-public class ScoreboardService implements BoardProvider, Service {
+public class ScoreboardService implements it.fedet.minigames.api.board.ScoreboardService, BoardProvider {
 
     private final MinigamesCore plugin;
     private BoardManager boardManager;
