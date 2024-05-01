@@ -1,0 +1,48 @@
+name: Create release
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - uses: actions/cache@v3
+        with:
+          path: ~/.gradle/caches
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+
+      - uses: actions/cache@v3
+        with:
+          path: ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradlew-${{ hashFiles('gradle/wrapper/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradlew-
+
+      - name: Retrieve current version number before release
+        run: ./gradlew printVersion -PmavenUser=${{ secrets.MAVEN_USER }} -PmavenPassword=${{ secrets.MAVEN_PASSWORD }}
+
+      - name: Create release tag
+        id: createRelease
+        run: |
+          ./gradlew shadowJar releaseVersion --no-commit
+
+      - name: Push new tag
+        run: |
+          git push origin --tags
+
+      - name: Create GitHub release
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          version=v$(./gradlew -q printVersion -PmavenUser=${{ secrets.MAVEN_USER }} -PmavenPassword=${{ secrets.MAVEN_PASSWORD }})
+          tag=$(git describe --tags --abbrev=0)
+           ./gradlew -q printChangeLog -PmavenUser=${{ secrets.MAVEN_USER }} -PmavenPassword=${{ secrets.MAVEN_PASSWORD }} | gh release create $tag --latest -t "$version" -F - ${{ github.workspace }}/plugin/build/libs/*.jar ${{ github.workspace }}/api/build/libs/*.jar
