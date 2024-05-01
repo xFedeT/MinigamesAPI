@@ -41,7 +41,6 @@ public abstract class MinigamePhase<T extends JavaPlugin> {
     }
 
     public void applyEvent(Event event) {
-
         List<GameListener<?>> listenersCopy = new ArrayList<>(listeners);
         for (GameListener<?> gameListener : listenersCopy) {
             gameListener.onEvent(event);

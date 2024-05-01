@@ -24,7 +24,11 @@ public interface GameListener<T extends Event> {
     void apply(T event);
 
     default void onEvent(Event event) {
-        if (getEventClass() != event.getClass()) return;
+        if (getEventClass() != event.getClass()) {
+            if (!getEventClass().isAssignableFrom(event.getClass())) {
+                return;
+            }
+        }
         if (event instanceof Cancellable cancellable)
             if (cancellable.isCancelled() && ignoreCancelled())
                 return;

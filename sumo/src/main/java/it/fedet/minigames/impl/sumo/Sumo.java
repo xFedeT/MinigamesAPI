@@ -23,6 +23,7 @@ public class Sumo extends JavaPlugin implements Minigame {
     public void onEnable() {
         minigamesAPI = MinigamesProvider.get();
         minigamesAPI.registerMinigame(this);
+
         minigamesAPI.getSettings(ConfigFile.class).getProperty(ConfigFile.SCRITTA);
 
         this.databaseService = new Database(minigamesAPI);
@@ -30,7 +31,6 @@ public class Sumo extends JavaPlugin implements Minigame {
         minigamesAPI.registerDatabaseProvider(databaseService);
 
         gameService = minigamesAPI.getService(GameService.class);
-
 
         for (int i = 0; i < 10; i++) {
             gameService.registerGame(new SumoGame(this));
