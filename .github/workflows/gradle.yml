@@ -28,7 +28,7 @@ jobs:
             ${{ runner.os }}-gradlew-
 
       - name: Retrieve current version number before release
-        run: ./gradlew printVersion -PmavenUser=${{ secrets.MAVEN_USER }} -PmavenPassword=${{ secrets.MAVEN_PASSWORD }}
+        run: ./gradlew printVersion
 
       - name: Create release tag
         id: createRelease
@@ -43,6 +43,6 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ github.token }}
         run: |
-          version=v$(./gradlew -q printVersion -PmavenUser=${{ secrets.MAVEN_USER }} -PmavenPassword=${{ secrets.MAVEN_PASSWORD }})
+          version=v$(./gradlew -q printVersion)
           tag=$(git describe --tags --abbrev=0)
-           ./gradlew -q printChangeLog -PmavenUser=${{ secrets.MAVEN_USER }} -PmavenPassword=${{ secrets.MAVEN_PASSWORD }} | gh release create $tag --latest -t "$version" -F - ${{ github.workspace }}/plugin/build/libs/*.jar ${{ github.workspace }}/api/build/libs/*.jar
+           ./gradlew -q printChangeLog | gh release create $tag --latest -t "$version" -F - ${{ github.workspace }}/plugin/build/libs/*.jar ${{ github.workspace }}/api/build/libs/*.jar
