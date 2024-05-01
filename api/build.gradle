@@ -7,8 +7,8 @@ tasks.register('sourceJar', Jar) {
 }
 
 publishing {
-    def artifact = "api"
-    def group = 'it.fedet.minigames'
+    def artifact = "MinigameAPI"
+    def group = 'com.github.xFedeT'
 
     publications {
         maven(MavenPublication) {
