@@ -4,22 +4,16 @@ plugins {
 
 subprojects {
     apply plugin: 'java-library'
-    apply plugin: 'maven-publish'
-
 
     def ver = semver.version
 
     allprojects {
-        group = 'it.fedet'
         version = ver
-
 
         semver {
             releaseTagNameFormat = "v%s"
         }
     }
-
-    setGroup group
 
     java {
         toolchain.languageVersion.set(JavaLanguageVersion.of(8))
@@ -79,17 +73,6 @@ subprojects {
         compileOnly 'org.itsallcode:holiday-calculator:0.2.0'
 
 
-    }
-
-    publishing {
-        publications {
-            maven(MavenPublication) {
-                groupId project.group
-                artifactId project.name
-                version project.version
-                from components.java
-            }
-        }
     }
 
     compileJava {
