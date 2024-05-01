@@ -33,7 +33,7 @@ jobs:
       - name: Create release tag
         id: createRelease
         run: |
-          sh gradlew shadowJar: releaseVersion --no-commit
+          sh gradlew shadowJar releaseVersion --no-commit
 
       - name: Push new tag
         run: |
