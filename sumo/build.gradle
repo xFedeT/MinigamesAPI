@@ -3,7 +3,7 @@ plugins {
 }
 
 dependencies {
-    //implementation 'com.github.xFedeT:MinigamesAPI:v0.0.4'
+    implementation(project(":api"))
 }
 
 processResources {
