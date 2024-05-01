@@ -2,7 +2,8 @@ package it.fedet.minigames.player;
 
 import it.fedet.minigames.api.MinigamesAPI;
 import it.fedet.minigames.api.game.database.DatabaseProvider;
-import it.ytnoos.loadit.api.UserData;
+
+import it.fedet.minigames.api.loadit.UserData;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 

@@ -1,6 +1,6 @@
 package it.fedet.minigames.impl.sumo.player;
 
-import it.ytnoos.loadit.api.UserData;
+import it.fedet.minigames.api.loadit.UserData;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.UUID;

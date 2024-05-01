@@ -5,9 +5,9 @@ import it.fedet.minigames.api.MinigamesAPI;
 import it.fedet.minigames.api.function.ThrowableFunction;
 import it.fedet.minigames.api.function.ThrowableConsumer;
 import it.fedet.minigames.api.game.database.loader.UserDataLoader;
+import it.fedet.minigames.api.loadit.impl.Loadit;
+import it.fedet.minigames.api.loadit.UserData;
 import it.fedet.minigames.api.services.DatabaseService;
-import it.ytnoos.loadit.Loadit;
-import it.ytnoos.loadit.api.UserData;
 import org.bukkit.plugin.Plugin;
 import org.intellij.lang.annotations.Language;
 

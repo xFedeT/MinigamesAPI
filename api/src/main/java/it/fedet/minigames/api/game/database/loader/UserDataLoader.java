@@ -1,8 +1,9 @@
 package it.fedet.minigames.api.game.database.loader;
 
 import it.fedet.minigames.api.game.database.DatabaseProvider;
-import it.ytnoos.loadit.api.DataLoader;
-import it.ytnoos.loadit.api.UserData;
+import it.fedet.minigames.api.loadit.DataLoader;
+import it.fedet.minigames.api.loadit.UserData;
+
 
 import java.util.Optional;
 import java.util.UUID;
