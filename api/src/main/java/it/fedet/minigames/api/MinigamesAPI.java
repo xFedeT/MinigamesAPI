@@ -3,6 +3,7 @@ package it.fedet.minigames.api;
 import ch.jalu.configme.SettingsHolder;
 import ch.jalu.configme.SettingsManager;
 import fr.minuskube.inv.SmartInventory;
+import it.fedet.minigames.api.commands.GameCommand;
 import it.fedet.minigames.api.config.MinigameConfig;
 import it.fedet.minigames.api.game.database.DatabaseProvider;
 import it.fedet.minigames.api.game.player.inventory.InventorySnapshot;

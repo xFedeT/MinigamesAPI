@@ -1,5 +1,6 @@
 package it.fedet.minigames.api;
 
+import it.fedet.minigames.api.commands.GameCommand;
 import it.fedet.minigames.api.config.MinigameConfig;
 import it.fedet.minigames.api.game.database.DatabaseProvider;
 import it.fedet.minigames.api.gui.GameGui;
@@ -22,4 +23,5 @@ public interface Minigame<T extends Minigame<T>> {
 
     Map<Class<? extends GameInventory>, GameInventory> registerInventorys();
 
+    Map<Class<? extends GameCommand>, GameCommand> registerCommands();
 }

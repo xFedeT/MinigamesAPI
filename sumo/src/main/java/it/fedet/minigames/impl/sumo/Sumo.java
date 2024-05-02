@@ -2,11 +2,13 @@ package it.fedet.minigames.impl.sumo;
 
 import it.fedet.minigames.api.Minigame;
 import it.fedet.minigames.api.MinigamesAPI;
+import it.fedet.minigames.api.commands.GameCommand;
 import it.fedet.minigames.api.config.MinigameConfig;
 import it.fedet.minigames.api.gui.GameGui;
 import it.fedet.minigames.api.items.GameInventory;
 import it.fedet.minigames.api.provider.MinigamesProvider;
 import it.fedet.minigames.api.services.GameService;
+import it.fedet.minigames.impl.sumo.commands.Commands;
 import it.fedet.minigames.impl.sumo.config.ConfigFile;
 import it.fedet.minigames.impl.sumo.config.LanguageFile;
 import it.fedet.minigames.impl.sumo.database.Database;
@@ -82,6 +84,13 @@ public class Sumo extends JavaPlugin implements Minigame<Sumo> {
     public Map<Class<? extends GameInventory>, GameInventory> registerInventorys() {
         return Map.of(
                 ProvaInventory.class, new ProvaInventory()
+        );
+    }
+
+    @Override
+    public Map<Class<? extends GameCommand>, GameCommand> registerCommands() {
+        return Map.of(
+                Commands.class, new Commands()
         );
     }
 }
