@@ -3,15 +3,18 @@ package it.fedet.minigames;
 import ch.jalu.configme.SettingsHolder;
 import ch.jalu.configme.SettingsManager;
 import ch.jalu.configme.SettingsManagerBuilder;
+import fr.minuskube.inv.SmartInventory;
 import it.fedet.minigames.api.Minigame;
 import it.fedet.minigames.api.MinigamesAPI;
 import it.fedet.minigames.api.config.MinigameConfig;
 import it.fedet.minigames.api.game.database.DatabaseProvider;
+import it.fedet.minigames.api.gui.GameGui;
 import it.fedet.minigames.api.provider.MinigamesProvider;
 import it.fedet.minigames.api.services.Service;
 import it.fedet.minigames.board.ScoreboardService;
 import it.fedet.minigames.game.GameService;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
@@ -25,6 +28,7 @@ public final class MinigamesCore extends JavaPlugin implements MinigamesAPI {
 
     private static final Map<Class<? extends SettingsHolder>, SettingsManager> files = new HashMap<>();
     private final Map<Class<? extends Service>, Service> services = new LinkedHashMap<>();
+    private final Map<Class<? extends GameGui<?>>, SmartInventory> guis = new LinkedHashMap<>();
 
     public static MinigamesCore instance;
 
@@ -72,6 +76,24 @@ public final class MinigamesCore extends JavaPlugin implements MinigamesAPI {
         }
     }
 
+    public void registerGui(Class<? extends GameGui<?>> type, GameGui gameGui) {
+        guis.put(type,
+                SmartInventory.builder()
+                .id(gameGui.getId())
+                .title(gameGui.getTitle())
+                .size(gameGui.getRows(), gameGui.getColumns())
+                .provider(gameGui)
+                .closeable(gameGui.isCloseable())
+                .type(gameGui.getInventoryType())
+                .build()
+        );
+    }
+
+    @Override
+    public void openGui(Class<? extends GameGui<?>> type, Player player) {
+        guis.get(type).open(player);
+    }
+
     @Override
     public SettingsManager getSettings(Class<? extends SettingsHolder> type) {
         return files.get(type);
@@ -98,6 +120,9 @@ public final class MinigamesCore extends JavaPlugin implements MinigamesAPI {
     public void registerMinigame(Minigame minigame) {
         this.minigame = minigame;
         registerConfig(minigame.getSettings());
+
+        //registering gui
+        minigame.getGuis().forEach((clazz, gui) -> registerGui((Class<? extends GameGui<?>>) clazz, gui));
     }
 
 
