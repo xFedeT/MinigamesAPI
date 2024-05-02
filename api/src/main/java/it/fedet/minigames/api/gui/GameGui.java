@@ -6,9 +6,9 @@ import it.fedet.minigames.api.Minigame;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryType;
 
-public abstract class GameGui<T extends Minigame> implements InventoryProvider {
+public abstract class GameGui<T extends Minigame<T>> implements InventoryProvider {
 
-    private final T plugin;
+    protected final T plugin;
 
     private String id = getId();
     private String title = getTitle();

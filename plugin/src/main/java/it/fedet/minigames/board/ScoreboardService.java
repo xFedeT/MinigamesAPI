@@ -11,7 +11,7 @@ import org.bukkit.entity.Player;
 
 import java.util.List;
 
-public class ScoreboardService implements it.fedet.minigames.api.board.ScoreboardService, BoardProvider {
+public class ScoreboardService implements it.fedet.minigames.api.services.ScoreboardService, BoardProvider {
 
     private final MinigamesCore plugin;
     private BoardManager boardManager;

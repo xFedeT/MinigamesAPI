@@ -1,7 +1,7 @@
-package it.fedet.minigames.api.game.player.inventory;
+package it.fedet.minigames.api.game.inventory;
 
-import it.fedet.minigames.api.game.player.inventory.armor.ArmorContents;
-import it.fedet.minigames.api.game.player.inventory.item.InventoryItem;
+import it.fedet.minigames.api.game.inventory.armor.ArmorContents;
+import it.fedet.minigames.api.game.inventory.item.InventoryItem;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;

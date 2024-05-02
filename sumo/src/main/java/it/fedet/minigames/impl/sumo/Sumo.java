@@ -4,6 +4,7 @@ import it.fedet.minigames.api.Minigame;
 import it.fedet.minigames.api.MinigamesAPI;
 import it.fedet.minigames.api.commands.GameCommand;
 import it.fedet.minigames.api.config.MinigameConfig;
+import it.fedet.minigames.api.game.team.TeamProvider;
 import it.fedet.minigames.api.gui.GameGui;
 import it.fedet.minigames.api.items.GameInventory;
 import it.fedet.minigames.api.provider.MinigamesProvider;
@@ -13,6 +14,7 @@ import it.fedet.minigames.impl.sumo.config.ConfigFile;
 import it.fedet.minigames.impl.sumo.config.LanguageFile;
 import it.fedet.minigames.impl.sumo.database.Database;
 import it.fedet.minigames.impl.sumo.game.SumoGame;
+import it.fedet.minigames.impl.sumo.game.team.TeamProviderTest;
 import it.fedet.minigames.impl.sumo.guis.ProvaGui;
 import it.fedet.minigames.impl.sumo.inventory.ProvaInventory;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -31,7 +33,7 @@ public class Sumo extends JavaPlugin implements Minigame<Sumo> {
         minigamesAPI = MinigamesProvider.get();
         minigamesAPI.registerMinigame(this);
 
-        minigamesAPI.getSettings(ConfigFile.class).getProperty(ConfigFile.SCRITTA);
+        minigamesAPI.getConfig(ConfigFile.class).getProperty(ConfigFile.SCRITTA);
 
         this.databaseService = new Database(minigamesAPI);
 
@@ -39,8 +41,8 @@ public class Sumo extends JavaPlugin implements Minigame<Sumo> {
 
         gameService = minigamesAPI.getService(GameService.class);
 
-        for (int i = 0; i < 10; i++) {
-            gameService.registerGame(new SumoGame(this));
+        for (int id = 0; id < 10; id++) {
+            gameService.registerGame(new SumoGame(this, id));
         }
     }
 
@@ -92,5 +94,10 @@ public class Sumo extends JavaPlugin implements Minigame<Sumo> {
         return Map.of(
                 Commands.class, new Commands()
         );
+    }
+
+    @Override
+    public TeamProvider registerTeamProvider() {
+        return new TeamProviderTest();
     }
 }

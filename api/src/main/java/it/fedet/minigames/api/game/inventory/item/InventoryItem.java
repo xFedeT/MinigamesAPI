@@ -1,4 +1,4 @@
-package it.fedet.minigames.api.game.player.inventory.item;
+package it.fedet.minigames.api.game.inventory.item;
 
 import org.bukkit.inventory.ItemStack;
 

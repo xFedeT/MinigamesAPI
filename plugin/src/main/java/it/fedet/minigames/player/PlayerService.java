@@ -10,7 +10,7 @@ import org.bukkit.entity.Player;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
-public class PlayerService<T extends UserData> implements it.fedet.minigames.api.game.player.PlayerService<T> {
+public class PlayerService<T extends UserData> implements it.fedet.minigames.api.services.PlayerService<T> {
 
     private final MinigamesAPI plugin;
 
@@ -28,6 +28,7 @@ public class PlayerService<T extends UserData> implements it.fedet.minigames.api
 
     }
 
+    @Override
     public T getPlayer(Player player) {
         return (T) plugin.getService(DatabaseProvider.class).getPlayerDataLoadit().getContainer().getCached(player);
     }

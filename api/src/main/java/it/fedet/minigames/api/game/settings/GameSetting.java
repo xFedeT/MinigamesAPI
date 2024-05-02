@@ -1,4 +1,4 @@
-package it.fedet.minigames.api.settings;
+package it.fedet.minigames.api.game.settings;
 
 public class GameSetting<T> implements Cloneable {
 

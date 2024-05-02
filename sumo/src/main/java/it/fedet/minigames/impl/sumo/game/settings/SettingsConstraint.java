@@ -1,6 +1,6 @@
 package it.fedet.minigames.impl.sumo.game.settings;
 
-import it.fedet.minigames.api.settings.GameSetting;
+import it.fedet.minigames.api.game.settings.GameSetting;
 
 public interface SettingsConstraint {
 

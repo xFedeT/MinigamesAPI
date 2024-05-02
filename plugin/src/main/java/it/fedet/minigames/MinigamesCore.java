@@ -9,7 +9,7 @@ import it.fedet.minigames.api.MinigamesAPI;
 import it.fedet.minigames.api.commands.GameCommand;
 import it.fedet.minigames.api.config.MinigameConfig;
 import it.fedet.minigames.api.game.database.DatabaseProvider;
-import it.fedet.minigames.api.game.player.inventory.InventorySnapshot;
+import it.fedet.minigames.api.game.inventory.InventorySnapshot;
 import it.fedet.minigames.api.gui.GameGui;
 import it.fedet.minigames.api.items.GameInventory;
 import it.fedet.minigames.api.provider.MinigamesProvider;
@@ -19,6 +19,7 @@ import it.fedet.minigames.commands.CommandService;
 import it.fedet.minigames.commands.exception.NotLampCommandClassException;
 import it.fedet.minigames.game.GameService;
 import it.fedet.minigames.player.PlayerService;
+import it.fedet.minigames.team.TeamProvider;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -31,7 +32,7 @@ import java.util.List;
 import java.util.Map;
 
 public final class MinigamesCore extends JavaPlugin implements MinigamesAPI {
-    private Minigame minigame;
+    private Minigame<?> minigame;
 
     private static final Map<Class<? extends SettingsHolder>, SettingsManager> files = new HashMap<>();
     private final Map<Class<? extends Service>, Service> services = new LinkedHashMap<>();
@@ -44,26 +45,6 @@ public final class MinigamesCore extends JavaPlugin implements MinigamesAPI {
     @Override
     public void onEnable() {
         MinigamesProvider.register(this);
-
-        //Loading all services
-        for (Class<?> service : getServices()) {
-            try {
-                if (service.isAssignableFrom(Service.class))
-                    throw new RuntimeException();
-
-                Service object = (Service) service.getConstructor(MinigamesCore.class).newInstance(this);
-                object.start();
-
-                services.put((Class<? extends Service>) service, object);
-                getLogger().info("Loaded a new service: " + service.getSimpleName());
-            } catch (Exception e) {
-                e.printStackTrace();
-                getLogger().info("Cannot load a service: " + service.getSimpleName());
-                getLogger().info("Instance shutdown...");
-                Bukkit.shutdown();
-                return;
-            }
-        }
     }
 
     public boolean registerConfig(List<MinigameConfig> configs) {
@@ -119,7 +100,7 @@ public final class MinigamesCore extends JavaPlugin implements MinigamesAPI {
     }
 
     @Override
-    public SettingsManager getSettings(Class<? extends SettingsHolder> type) {
+    public SettingsManager getConfig(Class<? extends SettingsHolder> type) {
         return files.get(type);
     }
 
@@ -142,14 +123,37 @@ public final class MinigamesCore extends JavaPlugin implements MinigamesAPI {
 
     @Override
     public <T extends Minigame<T>> void registerMinigame(Minigame<T> minigame) {
+        //Loading all services
+        for (Class<?> service : getServices()) {
+            try {
+                if (service.isAssignableFrom(Service.class))
+                    throw new RuntimeException();
+
+                Service object = (Service) service.getConstructor(MinigamesCore.class).newInstance(this);
+                object.start();
+
+                services.put((Class<? extends Service>) service, object);
+                getLogger().info("Loaded a new service: " + service.getSimpleName());
+            } catch (Exception e) {
+                e.printStackTrace();
+                getLogger().info("Cannot load a service: " + service.getSimpleName());
+                getLogger().info("Instance shutdown...");
+                Bukkit.shutdown();
+                return;
+            }
+        }
+
+
         this.minigame = minigame;
         registerConfig(minigame.registerConfigs());
 
         //registering gui
         minigame.registerGuis().forEach(this::registerGui);
 
+        //Saving Inventorys
         inventorys.putAll(minigame.registerInventorys());
 
+        //Register Command
         minigame.registerCommands().forEach((clazz, command) -> {
             if (command.getClass().isAnnotationPresent(Command.class)) {
                 commands.put(clazz, command);
@@ -161,6 +165,9 @@ public final class MinigamesCore extends JavaPlugin implements MinigamesAPI {
                 }
             }
         });
+
+        services.put(CommandService.class, new CommandService(this));
+        getService(CommandService.class).start();
     }
 
     @Override
@@ -172,12 +179,14 @@ public final class MinigamesCore extends JavaPlugin implements MinigamesAPI {
         return commands;
     }
 
+    public Minigame<?> getMinigame() {
+        return minigame;
+    }
+
     private Class<?>[] getServices() {
         return new Class<?>[]{
-                GameService.class,
                 PlayerService.class,
-                ScoreboardService.class,
-                CommandService.class
+                ScoreboardService.class
         };
     }
 

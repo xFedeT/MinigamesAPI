@@ -10,11 +10,8 @@ import java.util.UUID;
 
 public class ProvaGui extends GameGui<Sumo> {
 
-    private Sumo plugin;
-
     public ProvaGui(Sumo plugin) {
         super(plugin);
-        this.plugin = plugin;
     }
 
     @Override

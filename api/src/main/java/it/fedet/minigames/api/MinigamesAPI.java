@@ -3,16 +3,12 @@ package it.fedet.minigames.api;
 import ch.jalu.configme.SettingsHolder;
 import ch.jalu.configme.SettingsManager;
 import fr.minuskube.inv.SmartInventory;
-import it.fedet.minigames.api.commands.GameCommand;
-import it.fedet.minigames.api.config.MinigameConfig;
 import it.fedet.minigames.api.game.database.DatabaseProvider;
-import it.fedet.minigames.api.game.player.inventory.InventorySnapshot;
+import it.fedet.minigames.api.game.inventory.InventorySnapshot;
 import it.fedet.minigames.api.gui.GameGui;
 import it.fedet.minigames.api.items.GameInventory;
 import it.fedet.minigames.api.services.Service;
 import org.bukkit.entity.Player;
-
-import java.util.List;
 
 public interface MinigamesAPI {
 
@@ -24,7 +20,7 @@ public interface MinigamesAPI {
 
     void openInventory(Class<? extends GameInventory> type, Player player);
 
-    SettingsManager getSettings(Class<? extends SettingsHolder> type);
+    SettingsManager getConfig(Class<? extends SettingsHolder> type);
 
     <T extends Service> T getService(Class<T> service);
 
