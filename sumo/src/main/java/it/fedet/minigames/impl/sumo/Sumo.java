@@ -4,6 +4,7 @@ import it.fedet.minigames.api.Minigame;
 import it.fedet.minigames.api.MinigamesAPI;
 import it.fedet.minigames.api.config.MinigameConfig;
 import it.fedet.minigames.api.gui.GameGui;
+import it.fedet.minigames.api.items.GameInventory;
 import it.fedet.minigames.api.provider.MinigamesProvider;
 import it.fedet.minigames.api.services.GameService;
 import it.fedet.minigames.impl.sumo.config.ConfigFile;
@@ -11,6 +12,7 @@ import it.fedet.minigames.impl.sumo.config.LanguageFile;
 import it.fedet.minigames.impl.sumo.database.Database;
 import it.fedet.minigames.impl.sumo.game.SumoGame;
 import it.fedet.minigames.impl.sumo.guis.ProvaGui;
+import it.fedet.minigames.impl.sumo.inventory.ProvaInventory;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.List;
@@ -32,8 +34,6 @@ public class Sumo extends JavaPlugin implements Minigame<Sumo> {
         this.databaseService = new Database(minigamesAPI);
 
         minigamesAPI.registerDatabaseProvider(databaseService);
-
-
 
         gameService = minigamesAPI.getService(GameService.class);
 
@@ -62,8 +62,8 @@ public class Sumo extends JavaPlugin implements Minigame<Sumo> {
         return gameService;
     }
 
-
-    public List<MinigameConfig> getConfigs() {
+    @Override
+    public List<MinigameConfig> registerConfigs() {
         return List.of(
             new ConfigFile(),
             new LanguageFile()
@@ -72,9 +72,16 @@ public class Sumo extends JavaPlugin implements Minigame<Sumo> {
 
 
     @Override
-    public Map<Class<? extends GameGui<Sumo>>, GameGui<Sumo>> getGuis() {
+    public Map<Class<? extends GameGui<Sumo>>, GameGui<Sumo>> registerGuis() {
         return Map.of(
                 ProvaGui.class, new ProvaGui(this)
+        );
+    }
+
+    @Override
+    public Map<Class<? extends GameInventory>, GameInventory> registerInventorys() {
+        return Map.of(
+                ProvaInventory.class, new ProvaInventory()
         );
     }
 }

@@ -8,7 +8,9 @@ import it.fedet.minigames.api.Minigame;
 import it.fedet.minigames.api.MinigamesAPI;
 import it.fedet.minigames.api.config.MinigameConfig;
 import it.fedet.minigames.api.game.database.DatabaseProvider;
+import it.fedet.minigames.api.game.player.inventory.InventorySnapshot;
 import it.fedet.minigames.api.gui.GameGui;
+import it.fedet.minigames.api.items.GameInventory;
 import it.fedet.minigames.api.provider.MinigamesProvider;
 import it.fedet.minigames.api.services.Service;
 import it.fedet.minigames.board.ScoreboardService;
@@ -29,6 +31,7 @@ public final class MinigamesCore extends JavaPlugin implements MinigamesAPI {
     private static final Map<Class<? extends SettingsHolder>, SettingsManager> files = new HashMap<>();
     private final Map<Class<? extends Service>, Service> services = new LinkedHashMap<>();
     private final Map<Class<? extends GameGui<?>>, SmartInventory> guis = new LinkedHashMap<>();
+    private final Map<Class<? extends GameInventory>, GameInventory> inventorys = new LinkedHashMap<>();
 
     public static MinigamesCore instance;
 
@@ -90,8 +93,23 @@ public final class MinigamesCore extends JavaPlugin implements MinigamesAPI {
     }
 
     @Override
+    public SmartInventory getGui(Class<? extends GameGui<?>> type) {
+        return guis.get(type);
+    }
+    
+    @Override
     public void openGui(Class<? extends GameGui<?>> type, Player player) {
         guis.get(type).open(player);
+    }
+
+    @Override
+    public InventorySnapshot getInventory(Class<? extends GameInventory> type) {
+        return inventorys.get(type).getInventorySnapshot();
+    }
+
+    @Override
+    public void openInventory(Class<? extends GameInventory> type, Player player) {
+        inventorys.get(type).getInventorySnapshot().apply(player);
     }
 
     @Override
@@ -119,10 +137,12 @@ public final class MinigamesCore extends JavaPlugin implements MinigamesAPI {
     @Override
     public <T extends Minigame<T>> void registerMinigame(Minigame<T> minigame) {
         this.minigame = minigame;
-        registerConfig(minigame.getConfigs());
+        registerConfig(minigame.registerConfigs());
 
         //registering gui
-        minigame.getGuis().forEach(this::registerGui);
+        minigame.registerGuis().forEach(this::registerGui);
+
+        inventorys.putAll(minigame.registerInventorys());
     }
 
     @Override

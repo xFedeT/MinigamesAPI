@@ -6,6 +6,7 @@ import it.fedet.minigames.api.game.phase.MinigamePhase;
 import it.fedet.minigames.impl.sumo.Sumo;
 import it.fedet.minigames.impl.sumo.game.SumoGame;
 import it.fedet.minigames.impl.sumo.guis.ProvaGui;
+import it.fedet.minigames.impl.sumo.inventory.ProvaInventory;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerJoinEvent;
 
@@ -70,6 +71,7 @@ public class WaitingPlayerPhase extends MinigamePhase<Sumo> {
                     event.setJoinMessage("FUNZIONOOOOOOO WAITING PLAYER!");
 
                     game.getPlugin().getMinigamesAPI().openGui(ProvaGui.class, event.getPlayer());
+                    game.getPlugin().getMinigamesAPI().openInventory(ProvaInventory.class, event.getPlayer());
                 }
             }
         };
