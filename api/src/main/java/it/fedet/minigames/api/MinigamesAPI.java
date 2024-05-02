@@ -20,5 +20,5 @@ public interface MinigamesAPI {
 
     <T extends DatabaseProvider> boolean registerDatabaseProvider(T provider);
 
-    void registerMinigame(Minigame minigame);
+    <T extends Minigame<T>> void registerMinigame(Minigame<T> minigame);
 }

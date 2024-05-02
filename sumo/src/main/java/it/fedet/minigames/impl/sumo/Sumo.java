@@ -16,7 +16,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import java.util.List;
 import java.util.Map;
 
-public class Sumo extends JavaPlugin implements Minigame {
+public class Sumo extends JavaPlugin implements Minigame<Sumo> {
 
     private MinigamesAPI minigamesAPI;
     private GameService gameService;
@@ -63,7 +63,7 @@ public class Sumo extends JavaPlugin implements Minigame {
     }
 
 
-    public List<MinigameConfig> getSettings() {
+    public List<MinigameConfig> getConfigs() {
         return List.of(
             new ConfigFile(),
             new LanguageFile()
@@ -72,13 +72,9 @@ public class Sumo extends JavaPlugin implements Minigame {
 
 
     @Override
-    public Map<Class<? extends GameGui>, GameGui> getGuis() {
+    public Map<Class<? extends GameGui<Sumo>>, GameGui<Sumo>> getGuis() {
         return Map.of(
                 ProvaGui.class, new ProvaGui(this)
         );
     }
-
-
-
-
 }

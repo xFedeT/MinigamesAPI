@@ -117,14 +117,13 @@ public final class MinigamesCore extends JavaPlugin implements MinigamesAPI {
     }
 
     @Override
-    public void registerMinigame(Minigame minigame) {
+    public <T extends Minigame<T>> void registerMinigame(Minigame<T> minigame) {
         this.minigame = minigame;
-        registerConfig(minigame.getSettings());
+        registerConfig(minigame.getConfigs());
 
         //registering gui
-        minigame.getGuis().forEach((clazz, gui) -> registerGui((Class<? extends GameGui<?>>) clazz, gui));
+        minigame.getGuis().forEach(this::registerGui);
     }
-
 
     @Override
     public void onDisable() {
