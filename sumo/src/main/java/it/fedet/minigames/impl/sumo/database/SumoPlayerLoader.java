@@ -17,15 +17,11 @@ public class SumoPlayerLoader extends UserDataLoader<SumoPlayer> {
 
     @Override
     public Optional<SumoPlayer> getOrCreate(UUID uuid, String name) {
-        boolean result = databaseService.existsPlayer(name);
+        Optional<SumoPlayer> player = super.getOrCreate(uuid, name);
 
-        if (!result) {
-            databaseService.createPlayer(name);
-        }
+        //DO SOMETHING
 
-        Optional<SumoPlayer> userData = databaseService.retrievePlayer(name);
-
-        return userData;
+        return player;
     }
 
 }
