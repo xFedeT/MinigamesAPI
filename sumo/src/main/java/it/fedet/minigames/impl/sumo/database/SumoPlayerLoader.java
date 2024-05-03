@@ -23,11 +23,9 @@ public class SumoPlayerLoader extends UserDataLoader<SumoPlayer> {
             databaseService.createPlayer(name);
         }
 
-        Optional<SumoPlayer> skywarsPlayer = databaseService.retrievePlayer(name);
+        Optional<SumoPlayer> userData = databaseService.retrievePlayer(name);
 
-
-
-        return skywarsPlayer;
+        return userData;
     }
 
 }

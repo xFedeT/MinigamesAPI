@@ -24,9 +24,9 @@ public class UserDataLoader<T extends UserData> implements DataLoader<T> {
             databaseService.createPlayer(name);
         }
 
-        Optional<T> skywarsPlayer = databaseService.retrievePlayer(name);
+        Optional<T> userData = databaseService.retrievePlayer(name);
 
-        return skywarsPlayer;
+        return userData;
     }
 
     @Override
