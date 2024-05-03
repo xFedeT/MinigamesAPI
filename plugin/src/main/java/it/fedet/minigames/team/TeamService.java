@@ -12,7 +12,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.*;
 
-public class TeamService implements it.fedet.minigames.api.game.team.TeamService {
+public class TeamService implements it.fedet.minigames.api.services.TeamService {
 
     private final List<DistributionCriteria> criterias;
 
@@ -36,13 +36,14 @@ public class TeamService implements it.fedet.minigames.api.game.team.TeamService
     }
 
     @Override
-    public <T extends JavaPlugin & Minigame<T>> void addIntoATeam(Player player, Game<T> game) {
+    public <P extends JavaPlugin & Minigame<P>> void addIntoATeam(Player player, Game<P> game) {
         if (game.getGameStatus() != GameStatus.PLAYING || game.getGameStatus() != GameStatus.ENDING) {
             for (DistributionCriteria criteria : criterias) {
                 Set<GameTeam> filteredTeams = new HashSet<>(criteria.getFilter().filter(teams.values()));
 
                 DistributionResult result = criteria.distribute(game, player, filteredTeams, maxPlayersPerTeam, plugin);
                 if (result == DistributionResult.SUCCESS) {
+
                     break;
                 }
             }

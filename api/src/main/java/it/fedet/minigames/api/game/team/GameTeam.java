@@ -25,12 +25,12 @@ public abstract class GameTeam {
         this.gameID = gameID;
     }
 
-    public <T extends JavaPlugin & MinigamesAPI> void register(Player player, T plugin) {
+    public <P extends JavaPlugin & MinigamesAPI> void register(Player player, P plugin) {
         player.setMetadata("team_id", new FixedMetadataValue(plugin, id));
         members.put(plugin.getService(PlayerService.class).getPlayer(player), PlayerStatus.ALIVE);
     }
 
-    public <T extends JavaPlugin & MinigamesAPI> void unregister(Player player, T plugin) {
+    public <P extends JavaPlugin & MinigamesAPI> void unregister(Player player, P plugin) {
         if (player.hasMetadata("team_id") && player.getMetadata("team_id").get(0).asInt() == id) {
             player.removeMetadata("team_id", plugin);
             members.remove(plugin.getService(PlayerService.class).getPlayer(player));
@@ -55,8 +55,8 @@ public abstract class GameTeam {
                 .collect(Collectors.toSet());
     }
 
-    public void forEachOnlineTeamPlayer(Consumer<Player> c) {
-        getPlayers(PlayerStatus.ALIVE).forEach(c);
+    public void forEachOnlineTeamPlayer(Consumer<Player> consumer) {
+        getPlayers(PlayerStatus.ALIVE).forEach(consumer);
     }
 
     public boolean isInTeam(Player player) {

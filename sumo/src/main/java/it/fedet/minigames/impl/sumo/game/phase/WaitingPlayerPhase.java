@@ -59,21 +59,21 @@ public class WaitingPlayerPhase extends MinigamePhase<Sumo> {
     @Override
     public GameListener<?>[] registerListeners() {
         return new GameListener[]{
-            new GameListener<PlayerJoinEvent>() {
+                new GameListener<PlayerJoinEvent>() {
 
-                @Override
-                public Class<PlayerJoinEvent> getEventClass() {
-                    return PlayerJoinEvent.class;
+                    @Override
+                    public Class<PlayerJoinEvent> getEventClass() {
+                        return PlayerJoinEvent.class;
+                    }
+
+                    @Override
+                    public void apply(PlayerJoinEvent event) {
+                        event.setJoinMessage("FUNZIONOOOOOOO WAITING PLAYER!");
+
+                        game.getPlugin().getMinigamesAPI().openGui(ProvaGui.class, event.getPlayer());
+                        game.getPlugin().getMinigamesAPI().openInventory(ProvaInventory.class, event.getPlayer());
+                    }
                 }
-
-                @Override
-                public void apply(PlayerJoinEvent event) {
-                    event.setJoinMessage("FUNZIONOOOOOOO WAITING PLAYER!");
-
-                    game.getPlugin().getMinigamesAPI().openGui(ProvaGui.class, event.getPlayer());
-                    game.getPlugin().getMinigamesAPI().openInventory(ProvaInventory.class, event.getPlayer());
-                }
-            }
         };
     }
 }

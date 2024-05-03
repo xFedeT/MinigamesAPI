@@ -22,9 +22,9 @@ public interface MinigamesAPI {
 
     SettingsManager getConfig(Class<? extends SettingsHolder> type);
 
-    <T extends Service> T getService(Class<T> service);
+    <S extends Service> S getService(Class<S> service);
 
-    <T extends DatabaseProvider> boolean registerDatabaseProvider(T provider);
+    <D extends DatabaseProvider> boolean registerDatabaseProvider(D provider);
 
-    <T extends Minigame<T>> void registerMinigame(Minigame<T> minigame);
+    <P extends Minigame<P>> void registerMinigame(Minigame<P> minigame);
 }

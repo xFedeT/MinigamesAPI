@@ -2,11 +2,11 @@ package it.fedet.minigames.api.game.database;
 
 import com.zaxxer.hikari.HikariDataSource;
 import it.fedet.minigames.api.MinigamesAPI;
-import it.fedet.minigames.api.function.ThrowableFunction;
 import it.fedet.minigames.api.function.ThrowableConsumer;
+import it.fedet.minigames.api.function.ThrowableFunction;
 import it.fedet.minigames.api.game.database.loader.UserDataLoader;
-import it.fedet.minigames.api.loadit.impl.Loadit;
 import it.fedet.minigames.api.loadit.UserData;
+import it.fedet.minigames.api.loadit.impl.Loadit;
 import it.fedet.minigames.api.services.DatabaseService;
 import org.bukkit.plugin.Plugin;
 import org.intellij.lang.annotations.Language;
@@ -22,36 +22,42 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.function.Consumer;
 
-public abstract class DatabaseProvider<T extends UserData> implements DatabaseService {
+public abstract class DatabaseProvider<U extends UserData> implements DatabaseService {
 
 
     ExecutorService executor = Executors.newFixedThreadPool(setThreadCount());
 
     private final MinigamesAPI plugin;
     private final HikariDataSource dataSource = new HikariDataSource();
-    private Loadit<T> loadit;
+    private Loadit<U> loadit;
 
     protected DatabaseProvider(MinigamesAPI plugin) {
         this.plugin = plugin;
     }
 
-    public Loadit<T> getPlayerDataLoadit() {
+    public Loadit<U> getPlayerDataLoadit() {
         return loadit;
     }
 
-    public abstract UserDataLoader<T> getUserDataLoader();
+    public abstract UserDataLoader<U> getUserDataLoader();
 
     public abstract String getJdbcURL();
+
     public abstract String getUser();
+
     public abstract String getPassword();
 
     public abstract void prepareTables();
+
     public abstract void runQuerys();
 
     public abstract void createPlayer(String name);
+
     public abstract boolean existsPlayer(String name);
-    public abstract Optional<T> retrievePlayer(UUID name);
-    public abstract Optional<T> retrievePlayer(String name);
+
+    public abstract Optional<U> retrievePlayer(UUID name);
+
+    public abstract Optional<U> retrievePlayer(String name);
 
     @Override
     public void start() {
@@ -74,7 +80,7 @@ public abstract class DatabaseProvider<T extends UserData> implements DatabaseSe
         }
     }
 
-        public <T> CompletableFuture<T> executeAsyncQuery(@Language("SQL") String sql, ThrowableConsumer<PreparedStatement, SQLException> statement, Consumer<SQLException> exception, ThrowableFunction<ResultSet, T, SQLException> resultSet) {
+    public <T> CompletableFuture<T> executeAsyncQuery(@Language("SQL") String sql, ThrowableConsumer<PreparedStatement, SQLException> statement, Consumer<SQLException> exception, ThrowableFunction<ResultSet, T, SQLException> resultSet) {
         return supplyAsync(() -> {
             try (PreparedStatement tempStatement = getConnection().prepareStatement(sql)) {
                 statement.accept(tempStatement);
@@ -122,14 +128,14 @@ public abstract class DatabaseProvider<T extends UserData> implements DatabaseSe
     }
 
     public void executeAsyncQuery(@Language("SQL") String sql, ThrowableConsumer<PreparedStatement, SQLException> statement) {
-         runAsync(() -> {
+        runAsync(() -> {
             try (PreparedStatement tempStatement = getConnection().prepareStatement(sql)) {
                 statement.accept(tempStatement);
                 tempStatement.executeQuery();
             } catch (SQLException e) {
                 e.printStackTrace();
             }
-         }, executor);
+        }, executor);
     }
 
 
@@ -226,13 +232,13 @@ public abstract class DatabaseProvider<T extends UserData> implements DatabaseSe
     }
 
     public void executeAsyncUpdate(@Language("SQL") String sql) {
-       runAsync(() -> {
-           try (PreparedStatement tempStatement = getConnection().prepareStatement(sql)) {
-               tempStatement.executeUpdate();
-           } catch (SQLException exception) {
-               exception.printStackTrace();
-           }
-       }, executor);
+        runAsync(() -> {
+            try (PreparedStatement tempStatement = getConnection().prepareStatement(sql)) {
+                tempStatement.executeUpdate();
+            } catch (SQLException exception) {
+                exception.printStackTrace();
+            }
+        }, executor);
     }
 
 

@@ -25,11 +25,11 @@ public interface DistributionCriteria {
         return BASE_FILTER;
     }
 
-    <T extends JavaPlugin & Minigame<T>> DistributionResult distribute(Game<T> game,
-                                  Player player,
-                                  Collection<GameTeam> teams,
-                                  int maxPlayersPerTeam,
-                                  MinigamesAPI minigamesAPI);
+    <P extends JavaPlugin & Minigame<P>> DistributionResult distribute(Game<P> game,
+                                                                       Player player,
+                                                                       Collection<GameTeam> teams,
+                                                                       int maxPlayersPerTeam,
+                                                                       MinigamesAPI minigamesAPI);
 
     int getPriority();
 

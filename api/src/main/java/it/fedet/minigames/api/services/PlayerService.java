@@ -6,8 +6,8 @@ import org.bukkit.entity.Player;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
-public interface PlayerService<T extends UserData> extends Service {
-    T getPlayer(Player player);
+public interface PlayerService<D extends UserData> extends Service {
+    D getPlayer(Player player);
 
-    CompletableFuture<Optional<T>> getCachedOrAsync(String player);
+    CompletableFuture<Optional<D>> getCachedOrAsync(String player);
 }

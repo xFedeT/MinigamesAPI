@@ -4,7 +4,7 @@ import it.fedet.minigames.api.Minigame;
 import it.fedet.minigames.api.MinigamesAPI;
 import it.fedet.minigames.api.commands.GameCommand;
 import it.fedet.minigames.api.config.MinigameConfig;
-import it.fedet.minigames.api.game.team.TeamProvider;
+import it.fedet.minigames.api.game.team.provider.TeamProvider;
 import it.fedet.minigames.api.gui.GameGui;
 import it.fedet.minigames.api.items.GameInventory;
 import it.fedet.minigames.api.provider.MinigamesProvider;
@@ -69,8 +69,8 @@ public class Sumo extends JavaPlugin implements Minigame<Sumo> {
     @Override
     public List<MinigameConfig> registerConfigs() {
         return List.of(
-            new ConfigFile(),
-            new LanguageFile()
+                new ConfigFile(),
+                new LanguageFile()
         );
     }
 

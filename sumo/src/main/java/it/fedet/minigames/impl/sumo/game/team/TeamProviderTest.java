@@ -1,20 +1,21 @@
 package it.fedet.minigames.impl.sumo.game.team;
 
 import it.fedet.minigames.api.game.team.GameTeam;
-import it.fedet.minigames.api.game.team.TeamProvider;
 import it.fedet.minigames.api.game.team.criteria.DistributionCriteria;
+import it.fedet.minigames.api.game.team.provider.TeamProvider;
+import org.bukkit.entity.Player;
 
 import java.util.List;
 
 public class TeamProviderTest implements TeamProvider {
 
     @Override
-    public void onAddInTeam() {
+    public void onAddInTeam(Player player, GameTeam team) {
 
     }
 
     @Override
-    public void onRemoveInTeam() {
+    public void onRemoveInTeam(Player player, GameTeam team) {
 
     }
 

@@ -67,13 +67,13 @@ public final class MinigamesCore extends JavaPlugin implements MinigamesAPI {
     public void registerGui(Class<? extends GameGui<?>> type, GameGui gameGui) {
         guis.put(type,
                 SmartInventory.builder()
-                .id(gameGui.getId())
-                .title(gameGui.getTitle())
-                .size(gameGui.getRows(), gameGui.getColumns())
-                .provider(gameGui)
-                .closeable(gameGui.isCloseable())
-                .type(gameGui.getInventoryType())
-                .build()
+                        .id(gameGui.getId())
+                        .title(gameGui.getTitle())
+                        .size(gameGui.getRows(), gameGui.getColumns())
+                        .provider(gameGui)
+                        .closeable(gameGui.isCloseable())
+                        .type(gameGui.getInventoryType())
+                        .build()
         );
     }
 
@@ -81,7 +81,7 @@ public final class MinigamesCore extends JavaPlugin implements MinigamesAPI {
     public SmartInventory getGui(Class<? extends GameGui<?>> type) {
         return guis.get(type);
     }
-    
+
     @Override
     public void openGui(Class<? extends GameGui<?>> type, Player player) {
         guis.get(type).open(player);
@@ -103,12 +103,12 @@ public final class MinigamesCore extends JavaPlugin implements MinigamesAPI {
     }
 
     @Override
-    public <T extends Service> T getService(Class<T> service) {
-        return (T) services.get(service);
+    public <S extends Service> S getService(Class<S> service) {
+        return (S) services.get(service);
     }
 
     @Override
-    public <T extends DatabaseProvider> boolean registerDatabaseProvider(T provider) {
+    public <D extends DatabaseProvider> boolean registerDatabaseProvider(D provider) {
         try {
             services.put(DatabaseProvider.class, provider);
             provider.start();
@@ -120,7 +120,7 @@ public final class MinigamesCore extends JavaPlugin implements MinigamesAPI {
     }
 
     @Override
-    public <T extends Minigame<T>> void registerMinigame(Minigame<T> minigame) {
+    public <P extends Minigame<P>> void registerMinigame(Minigame<P> minigame) {
         //Loading all services
         for (Class<?> service : getServices()) {
             try {
