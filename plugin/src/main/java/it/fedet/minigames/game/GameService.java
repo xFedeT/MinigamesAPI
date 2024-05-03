@@ -2,7 +2,7 @@ package it.fedet.minigames.game;
 
 import it.fedet.minigames.MinigamesCore;
 import it.fedet.minigames.api.game.Game;
-import it.fedet.minigames.team.TeamProvider;
+import it.fedet.minigames.team.TeamService;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -26,14 +26,14 @@ public class GameService implements it.fedet.minigames.api.services.GameService,
 
     private final Map<Integer, Game> activeGames = new ConcurrentHashMap<>();
 
-    private final TeamProvider teamProvider;
+    private final TeamService teamService;
 
     private final Thread gameThread = new Thread(() -> activeGames.forEach((id, game) -> game.tick()));
 
     public GameService(MinigamesCore plugin) {
         this.plugin = plugin;
 
-        teamProvider = new TeamProvider(
+        teamService = new TeamService(
                 plugin,
                 plugin.getMinigame().registerTeamProvider().getMaxPlayerPerTeams(),
                 plugin.getMinigame().registerTeamProvider().getCriterias()
@@ -65,7 +65,7 @@ public class GameService implements it.fedet.minigames.api.services.GameService,
         int id = game.getId();
         activeGames.put(id, game);
 
-        teamProvider.populateTeams(plugin.getMinigame().registerTeamProvider().teamQuantity(), id);
+        teamService.populateTeams(plugin.getMinigame().registerTeamProvider().teamQuantity(), id);
     }
 
     @Override
