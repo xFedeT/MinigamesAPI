@@ -11,7 +11,7 @@ A Minigame Plugin/API core that allow to create custom Minigame
 - Flexible
 - Null-safe
 - Better performance
-- Better Optimization
+- Better optimization
 
 
 ## How it works
