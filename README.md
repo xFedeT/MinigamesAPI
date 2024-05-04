@@ -4,6 +4,7 @@
 
 A Minigame Plugin/API core that allow to create custom Minigame
 
+- Simple to use
 - Lightweight
 - Flexible
 - Null-safe
