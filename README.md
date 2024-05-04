@@ -49,11 +49,13 @@ or build.gradle:
 
 **Getting MinigamesAPI in you project**
 ```java
+public class YourPlugin extends JavaPlugin implements Minigame {
     @Override
     public void onEnable() {
         minigamesAPI = MinigamesProvider.get();
         minigamesAPI.registerMinigame(this);
     }
+}
 ```
 :pencil: Read the full documentation in the [MinigamesAPI Wiki](https://github.com/xFedeT/MinigamesAPI/wiki).
 
