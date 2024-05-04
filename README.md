@@ -8,6 +8,8 @@ A Minigame Plugin/API core that allow to create custom Minigame
 - Lightweight
 - Flexible
 - Null-safe
+- Better performance
+- Better Optimization
 
 
 ## How it works
