@@ -1,6 +1,5 @@
 # MinigamesAPI
 [![Build Status](https://github.com/xFedeT/MinigamesAPI/actions/workflows/gradle.yml/badge.svg)](https://github.com/xFedeT/MinigamesAPI/actions?query=branch%3Amain)
-[![Coverage Status](https://coveralls.io/repos/github/xFedeT/MinigamesAPI/badge.svg?branch=main)](https://coveralls.io/github/xFedeT/MinigamesAPI?branch=main)
 [![Code Climate](https://codeclimate.com/github/xFedeT/MinigamesAPI/badges/gpa.svg)](https://codeclimate.com/github/xFedeT/MinigamesAPI)
 
 A Minigame Plugin/API core that allow to create custom Minigame
