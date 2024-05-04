@@ -6,6 +6,7 @@ import it.fedet.minigames.api.game.listener.GameListener;
 import it.fedet.minigames.api.game.phase.MinigamePhase;
 import it.fedet.minigames.impl.sumo.Sumo;
 import org.bukkit.entity.Player;
+import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
 
 import java.util.List;
 
@@ -42,6 +43,18 @@ public class PlayingPlayerPhase extends MinigamePhase<Sumo> {
 
     @Override
     public GameListener<?>[] registerListeners() {
-        return new GameListener[0];
+        return new GameListener[]{
+                new GameListener<AsyncPlayerPreLoginEvent>() {
+                    @Override
+                    public Class<AsyncPlayerPreLoginEvent> getEventClass() {
+                        return AsyncPlayerPreLoginEvent.class;
+                    }
+
+                    @Override
+                    public void apply(AsyncPlayerPreLoginEvent event) {
+
+                    }
+                }
+        };
     }
 }

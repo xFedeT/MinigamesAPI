@@ -18,7 +18,7 @@ tasks {
         dependsOn(shadowJar)
     }
     shadowJar {
-        relocate 'com.zaxxer', 'it.coralmc.skywars.lib.hikari'
+        relocate 'com.zaxxer', 'it.fedet.minigames.lib.hikari'
         archiveFileName = "MinigamesAPI-${project.version}.jar"
     }
 }

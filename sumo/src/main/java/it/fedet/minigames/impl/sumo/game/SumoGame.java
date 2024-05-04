@@ -7,8 +7,8 @@ import it.fedet.minigames.impl.sumo.game.phase.WaitingPlayerPhase;
 
 public class SumoGame extends Game<Sumo> {
 
-    public SumoGame(Sumo game) {
-        super(game);
+    public SumoGame(Sumo game, int gameId) {
+        super(game, gameId);
     }
 
     @Override

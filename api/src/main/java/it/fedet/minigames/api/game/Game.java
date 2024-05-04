@@ -1,18 +1,22 @@
 package it.fedet.minigames.api.game;
 
+import it.fedet.minigames.api.Minigame;
 import it.fedet.minigames.api.game.phase.MinigamePhase;
 import org.bukkit.plugin.java.JavaPlugin;
 
-public abstract class Game<T extends JavaPlugin> {
+public abstract class Game<P extends JavaPlugin & Minigame<P>> {
 
-    private final T plugin;
+    protected final P plugin;
 
-    private int gameId;
+    private GameStatus gameStatus;
 
-    public MinigamePhase<T> currentPhase = initialPhase();
+    private final int gameId;
 
-    public Game(T plugin) {
+    private MinigamePhase<P> currentPhase = initialPhase();
+
+    public Game(P plugin, int gameId) {
         this.plugin = plugin;
+        this.gameId = gameId;
     }
 
     public void tick() {
@@ -33,17 +37,21 @@ public abstract class Game<T extends JavaPlugin> {
         return gameId;
     }
 
-    public void setId(int value) {
-        gameId = value;
-    }
+    public abstract MinigamePhase<P> initialPhase();
 
-    public abstract MinigamePhase<T> initialPhase();
-
-    public T getPlugin() {
+    public P getPlugin() {
         return plugin;
     }
 
-    public MinigamePhase<T> getCurrentPhase() {
+    public GameStatus getGameStatus() {
+        return gameStatus;
+    }
+
+    public void setGameStatus(GameStatus gameStatus) {
+        this.gameStatus = gameStatus;
+    }
+
+    public MinigamePhase<P> getCurrentPhase() {
         return currentPhase;
     }
 }

@@ -2,4 +2,4 @@ name: MinigamesCore
 version: '${version}'
 main: it.fedet.minigames.MinigamesCore
 prefix: MinigamesCore
-authors: [xFedeT]
+authors: [ xFedeT ]

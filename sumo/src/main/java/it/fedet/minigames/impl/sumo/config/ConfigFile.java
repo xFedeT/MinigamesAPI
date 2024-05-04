@@ -26,5 +26,4 @@ public class ConfigFile implements MinigameConfig {
     public static final Property<String> SCRITTA = newProperty("scritta", "funzia");
 
 
-
 }

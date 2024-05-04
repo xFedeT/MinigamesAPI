@@ -4,9 +4,9 @@ import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventPriority;
 
-public interface GameListener<T extends Event> {
+public interface GameListener<E extends Event> {
 
-    Class<T> getEventClass();
+    Class<E> getEventClass();
 
     default EventPriority getPriority() {
         return EventPriority.NORMAL;
@@ -21,7 +21,7 @@ public interface GameListener<T extends Event> {
         return true;
     }
 
-    void apply(T event);
+    void apply(E event);
 
     default void onEvent(Event event) {
         if (getEventClass() != event.getClass()) {
@@ -33,7 +33,7 @@ public interface GameListener<T extends Event> {
             if (cancellable.isCancelled() && ignoreCancelled())
                 return;
 
-        apply((T) event);
+        apply((E) event);
     }
 
 

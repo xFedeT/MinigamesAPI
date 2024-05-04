@@ -8,7 +8,7 @@ import java.util.Map;
 public interface GameService extends Service {
 
 
-    boolean registerGame(Game game);
+    void registerGame(Game game);
 
     boolean unregisterGame(Game game);
 

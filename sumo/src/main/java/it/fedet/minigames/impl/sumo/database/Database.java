@@ -68,11 +68,11 @@ public class Database extends DatabaseProvider<SumoPlayer> {
 
     public Player getPlayerData(String playerName) {
         return executeQuery(
-            """
-                    SELECT * FROM A;
-                """,
+                """
+                            SELECT * FROM A;
+                        """,
                 statement -> statement.setString(1, playerName),
-                exception ->  exception.printStackTrace(),
+                exception -> exception.printStackTrace(),
                 resultSet -> {
                     return Bukkit.getPlayer(resultSet.getString("data"));
                 }
