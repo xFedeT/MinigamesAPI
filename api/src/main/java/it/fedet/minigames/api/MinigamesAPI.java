@@ -9,6 +9,7 @@ import it.fedet.minigames.api.gui.GameGui;
 import it.fedet.minigames.api.items.GameInventory;
 import it.fedet.minigames.api.services.Service;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.java.JavaPlugin;
 
 public interface MinigamesAPI {
 
@@ -27,4 +28,6 @@ public interface MinigamesAPI {
     <D extends DatabaseProvider> boolean registerDatabaseProvider(D provider);
 
     <P extends Minigame<P>> void registerMinigame(Minigame<P> minigame);
+
+    JavaPlugin getPlugin();
 }

@@ -3,7 +3,7 @@ package it.fedet.minigames.api.game.team;
 import it.fedet.minigames.api.MinigamesAPI;
 import it.fedet.minigames.api.game.player.PlayerStatus;
 import it.fedet.minigames.api.loadit.UserData;
-import it.fedet.minigames.api.services.PlayerService;
+import it.fedet.minigames.api.services.IPlayerService;
 import org.bukkit.entity.Player;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -27,13 +27,13 @@ public abstract class GameTeam {
 
     public <P extends JavaPlugin & MinigamesAPI> void register(Player player, P plugin) {
         player.setMetadata("team_id", new FixedMetadataValue(plugin, id));
-        members.put(plugin.getService(PlayerService.class).getPlayer(player), PlayerStatus.ALIVE);
+        members.put(plugin.getService(IPlayerService.class).getPlayer(player), PlayerStatus.ALIVE);
     }
 
     public <P extends JavaPlugin & MinigamesAPI> void unregister(Player player, P plugin) {
         if (player.hasMetadata("team_id") && player.getMetadata("team_id").get(0).asInt() == id) {
             player.removeMetadata("team_id", plugin);
-            members.remove(plugin.getService(PlayerService.class).getPlayer(player));
+            members.remove(plugin.getService(IPlayerService.class).getPlayer(player));
         }
     }
 

@@ -38,7 +38,7 @@ public class ScoreboardService implements it.fedet.minigames.api.services.Scoreb
 
     @Override
     public String getTitle(Player player) {
-        Game game = plugin.getService(GameService.class).getGameBy(player);
+        Game<?> game = plugin.getService(GameService.class).getGameBy(player);
 
         if (game == null)
             return "";
@@ -48,7 +48,7 @@ public class ScoreboardService implements it.fedet.minigames.api.services.Scoreb
 
     @Override
     public List<String> getLines(Player player) {
-        Game game = plugin.getService(GameService.class).getGameBy(player);
+        Game<?> game = plugin.getService(GameService.class).getGameBy(player);
 
         if (game == null)
             return List.of();

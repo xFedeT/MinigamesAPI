@@ -5,4 +5,6 @@ import revxrsal.commands.annotation.Command;
 
 @Command("")
 public class Commands implements GameCommand {
+
+
 }

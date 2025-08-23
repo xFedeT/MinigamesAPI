@@ -2,15 +2,24 @@ package it.fedet.minigames.game;
 
 import it.fedet.minigames.MinigamesCore;
 import it.fedet.minigames.api.game.Game;
+import it.fedet.minigames.api.services.IGameService;
 import it.fedet.minigames.team.TeamService;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.BlockEvent;
+import org.bukkit.event.enchantment.EnchantItemEvent;
 import org.bukkit.event.entity.EntityEvent;
+import org.bukkit.event.hanging.HangingEvent;
 import org.bukkit.event.inventory.InventoryEvent;
+import org.bukkit.event.painting.PaintingEvent;
 import org.bukkit.event.player.PlayerEvent;
+import org.bukkit.event.server.ServerEvent;
+import org.bukkit.event.vehicle.VehicleEvent;
+import org.bukkit.event.weather.WeatherEvent;
 import org.bukkit.event.world.WorldEvent;
 import org.bukkit.metadata.MetadataValue;
 import org.bukkit.plugin.RegisteredListener;
@@ -20,11 +29,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class GameService implements it.fedet.minigames.api.services.GameService, Listener {
+public class GameService implements IGameService, Listener {
 
     private MinigamesCore plugin;
 
-    private final Map<Integer, Game> activeGames = new ConcurrentHashMap<>();
+    private final Map<Integer, Game<?>> activeGames = new ConcurrentHashMap<>();
 
     private final TeamService teamService;
 
@@ -43,10 +52,19 @@ public class GameService implements it.fedet.minigames.api.services.GameService,
     @Override
     public void start() {
         RegisteredListener registeredListener = new RegisteredListener(this, (listener, event) -> {
-            if (event instanceof EntityEvent entityEvent) onEntityDamage(entityEvent);
-            else if (event instanceof InventoryEvent inventoryEvent) onInventoryEvent(inventoryEvent);
-            else if (event instanceof WorldEvent worldEvent) onWorldEvent(worldEvent);
-            else if (event instanceof PlayerEvent playerEvent) onPlayerEvent(playerEvent);
+            switch (event) {
+                case EntityEvent entityEvent -> onEntityEvent(entityEvent);
+                case  PlayerEvent playerEvent -> onPlayerEvent(playerEvent);
+                case EnchantItemEvent enchantmentEvent -> onEnchantmentEvent(enchantmentEvent);
+                case InventoryEvent inventoryEvent -> onInventoryEvent(inventoryEvent);
+                case WorldEvent worldEvent -> onWorldEvent(worldEvent);
+                case BlockEvent blockEvent -> onBlockEvent(blockEvent);
+                case VehicleEvent vehicleEvent -> onVehicleEvent(vehicleEvent);
+                case HangingEvent hangingEvent -> onHangingEvent(hangingEvent);
+                case PaintingEvent paintingEvent -> onPaintingEvent(paintingEvent);
+                case WeatherEvent weatherEvent -> onWeatherEvent(weatherEvent);
+                default -> {}
+            }
         }, EventPriority.HIGHEST, plugin, false);
 
         for (HandlerList handler : HandlerList.getHandlerLists())
@@ -61,7 +79,7 @@ public class GameService implements it.fedet.minigames.api.services.GameService,
     }
 
     @Override
-    public void registerGame(Game game) {
+    public void registerGame(Game<?> game) {
         int id = game.getId();
         activeGames.put(id, game);
 
@@ -69,23 +87,23 @@ public class GameService implements it.fedet.minigames.api.services.GameService,
     }
 
     @Override
-    public boolean unregisterGame(Game game) {
+    public boolean unregisterGame(Game<?> game) {
         activeGames.remove(game.getId());
         return true;
     }
 
     @Override
-    public Game getGameBy(int id) {
+    public Game<?> getGameBy(int id) {
         return activeGames.get(id);
     }
 
     @Override
-    public Map<Integer, Game> getActiveGames() {
+    public Map<Integer, Game<?>> getActiveGames() {
         return new HashMap<>(activeGames);
     }
 
     @Override
-    public Game getGameBy(Player player) {
+    public Game<?> getGameBy(Player player) {
         List<MetadataValue> values = player.getMetadata("game-id");
         if (values.isEmpty())
             return null;
@@ -93,57 +111,86 @@ public class GameService implements it.fedet.minigames.api.services.GameService,
         return activeGames.get(values.get(0).asInt());
     }
 
+    // Helper method per estrarre il game ID dal nome del mondo
+    @Override
+    public Game<?> getGameBy(World world) {
+        if (!world.getName().startsWith("game_")) return null;
+
+        try {
+            String[] worldSplit = world.getName().split("_");
+            return getGameBy(Integer.parseInt(worldSplit[1]));
+        } catch (NumberFormatException | ArrayIndexOutOfBoundsException e) {
+            return null;
+        }
+    }
+
     @EventHandler
-    private void onEntityDamage(EntityEvent event) {
-        String worldName = event.getEntity().getWorld().getName();
-        if (!worldName.startsWith("game_")) return;
-
-        String[] worldSplit = event.getEntity().getWorld().getName().split("_");
-        int gameID = Integer.parseInt(worldSplit[1]);
-
-        if (!activeGames.containsKey(gameID)) return;
-
-        activeGames.get(gameID).getCurrentPhase().applyEvent(event);
+    private void onEntityEvent(EntityEvent event) {
+        Game<?> game = getGameBy(event.getEntity().getWorld());
+        if (game == null || !activeGames.containsValue(game)) return;
+        game.getCurrentPhase().applyEvent(event);
     }
 
     @EventHandler
     private void onInventoryEvent(InventoryEvent event) {
-        String worldName = event.getView().getPlayer().getWorld().getName();
-        if (!worldName.startsWith("game_")) return;
-
-        String[] worldSplit = event.getView().getPlayer().getWorld().getName().split("_");
-        int gameID = Integer.parseInt(worldSplit[1]);
-
-        if (!activeGames.containsKey(gameID)) return;
-
-        activeGames.get(gameID).getCurrentPhase().applyEvent(event);
+        Game<?> game = getGameBy(event.getView().getPlayer().getWorld());
+        if (game == null || !activeGames.containsValue(game)) return;
+        game.getCurrentPhase().applyEvent(event);
     }
 
     @EventHandler
     private void onWorldEvent(WorldEvent event) {
-        String worldName = event.getWorld().getName();
-        if (!worldName.startsWith("game_")) return;
-
-        String[] worldSplit = event.getWorld().getName().split("_");
-        int gameID = Integer.parseInt(worldSplit[1]);
-
-        if (!activeGames.containsKey(gameID)) return;
-
-        activeGames.get(gameID).getCurrentPhase().applyEvent(event);
+        Game<?> game = getGameBy(event.getWorld());
+        if (game == null || !activeGames.containsValue(game)) return;
+        game.getCurrentPhase().applyEvent(event);
     }
 
     @EventHandler
     private void onPlayerEvent(PlayerEvent event) {
-        String worldName = event.getPlayer().getWorld().getName();
-        if (!worldName.startsWith("game_")) return;
-
-        String[] worldSplit = event.getPlayer().getWorld().getName().split("_");
-        int gameID = Integer.parseInt(worldSplit[1]);
-
-        if (!activeGames.containsKey(gameID)) return;
-
-        activeGames.get(gameID).getCurrentPhase().applyEvent(event);
+        Game<?> game = getGameBy(event.getPlayer());
+        if (game == null || !activeGames.containsValue(game)) return;
+        game.getCurrentPhase().applyEvent(event);
     }
 
+    @EventHandler
+    private void onBlockEvent(BlockEvent event) {
+        Game<?> game = getGameBy(event.getBlock().getWorld());
+        if (game == null || !activeGames.containsValue(game)) return;
+        game.getCurrentPhase().applyEvent(event);
+    }
 
+    @EventHandler
+    private void onVehicleEvent(VehicleEvent event) {
+        Game<?> game = getGameBy(event.getVehicle().getWorld());
+        if (game == null || !activeGames.containsValue(game)) return;
+        game.getCurrentPhase().applyEvent(event);
+    }
+
+    @EventHandler
+    private void onHangingEvent(HangingEvent event) {
+        Game<?> game = getGameBy(event.getEntity().getWorld());
+        if (game == null || !activeGames.containsValue(game)) return;
+        game.getCurrentPhase().applyEvent(event);
+    }
+
+    @EventHandler
+    private void onPaintingEvent(PaintingEvent event) {
+        Game<?> game = getGameBy(event.getPainting().getWorld());
+        if (game == null || !activeGames.containsValue(game)) return;
+        game.getCurrentPhase().applyEvent(event);
+    }
+
+    @EventHandler
+    private void onWeatherEvent(WeatherEvent event) {
+        Game<?> game = getGameBy(event.getWorld());
+        if (game == null || !activeGames.containsValue(game)) return;
+        game.getCurrentPhase().applyEvent(event);
+    }
+
+    @EventHandler
+    private void onEnchantmentEvent(EnchantItemEvent event) {
+        Game<?> game = getGameBy(event.getView().getPlayer().getWorld());
+        if (game == null || !activeGames.containsValue(game)) return;
+        game.getCurrentPhase().applyEvent(event);
+    }
 }

@@ -17,6 +17,7 @@ import it.fedet.minigames.api.services.Service;
 import it.fedet.minigames.board.ScoreboardService;
 import it.fedet.minigames.commands.CommandService;
 import it.fedet.minigames.commands.exception.NotLampCommandClassException;
+import it.fedet.minigames.items.ItemService;
 import it.fedet.minigames.player.PlayerService;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -38,11 +39,12 @@ public final class MinigamesCore extends JavaPlugin implements MinigamesAPI {
     private final Map<Class<? extends GameInventory>, GameInventory> inventorys = new LinkedHashMap<>();
     private final Map<Class<? extends GameCommand>, GameCommand> commands = new LinkedHashMap<>();
 
-    public static MinigamesCore instance;
+    private MinigamesCore instance;
 
     @Override
     public void onEnable() {
         MinigamesProvider.register(this);
+        instance = this;
     }
 
     public boolean registerConfig(List<MinigameConfig> configs) {
@@ -184,8 +186,13 @@ public final class MinigamesCore extends JavaPlugin implements MinigamesAPI {
     private Class<?>[] getServices() {
         return new Class<?>[]{
                 PlayerService.class,
+                ItemService.class,
                 ScoreboardService.class
         };
     }
 
+    @Override
+    public JavaPlugin getPlugin() {
+        return instance;
+    }
 }

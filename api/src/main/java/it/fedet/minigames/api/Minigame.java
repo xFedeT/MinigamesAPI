@@ -6,7 +6,7 @@ import it.fedet.minigames.api.game.database.DatabaseProvider;
 import it.fedet.minigames.api.game.team.provider.TeamProvider;
 import it.fedet.minigames.api.gui.GameGui;
 import it.fedet.minigames.api.items.GameInventory;
-import it.fedet.minigames.api.services.GameService;
+import it.fedet.minigames.api.services.IGameService;
 
 import java.util.List;
 import java.util.Map;
@@ -16,7 +16,7 @@ public interface Minigame<P extends Minigame<P>> {
 
     DatabaseProvider getDatabaseService();
 
-    GameService getGameService();
+    IGameService getGameService();
 
     List<MinigameConfig> registerConfigs();
 

@@ -6,7 +6,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class MinigamesProvider {
 
-    private static MinigamesAPI instance = null;
+    private static MinigamesAPI INSTANCE = null;
 
     @ApiStatus.Internal
     private MinigamesProvider() {
@@ -14,17 +14,17 @@ public class MinigamesProvider {
     }
 
     public static @NotNull MinigamesAPI get() {
-        return MinigamesProvider.instance;
+        return MinigamesProvider.INSTANCE;
     }
 
     @ApiStatus.Internal
     public static void register(MinigamesAPI instance) {
-        MinigamesProvider.instance = instance;
+        MinigamesProvider.INSTANCE = instance;
     }
 
     @ApiStatus.Internal
     public static void unregister() {
-        instance = null;
+        INSTANCE = null;
     }
 
 }

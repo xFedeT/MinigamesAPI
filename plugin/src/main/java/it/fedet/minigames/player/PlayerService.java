@@ -3,13 +3,14 @@ package it.fedet.minigames.player;
 import it.fedet.minigames.api.MinigamesAPI;
 import it.fedet.minigames.api.game.database.DatabaseProvider;
 import it.fedet.minigames.api.loadit.UserData;
+import it.fedet.minigames.api.services.IPlayerService;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
-public class PlayerService<U extends UserData> implements it.fedet.minigames.api.services.PlayerService<U> {
+public class PlayerService<U extends UserData> implements IPlayerService<U> {
 
     private final MinigamesAPI plugin;
 
@@ -19,7 +20,6 @@ public class PlayerService<U extends UserData> implements it.fedet.minigames.api
 
     @Override
     public void start() {
-
     }
 
     @Override
