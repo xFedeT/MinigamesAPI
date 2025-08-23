@@ -52,18 +52,26 @@ public class GameService implements IGameService, Listener {
     @Override
     public void start() {
         RegisteredListener registeredListener = new RegisteredListener(this, (listener, event) -> {
-            switch (event) {
-                case EntityEvent entityEvent -> onEntityEvent(entityEvent);
-                case  PlayerEvent playerEvent -> onPlayerEvent(playerEvent);
-                case EnchantItemEvent enchantmentEvent -> onEnchantmentEvent(enchantmentEvent);
-                case InventoryEvent inventoryEvent -> onInventoryEvent(inventoryEvent);
-                case WorldEvent worldEvent -> onWorldEvent(worldEvent);
-                case BlockEvent blockEvent -> onBlockEvent(blockEvent);
-                case VehicleEvent vehicleEvent -> onVehicleEvent(vehicleEvent);
-                case HangingEvent hangingEvent -> onHangingEvent(hangingEvent);
-                case PaintingEvent paintingEvent -> onPaintingEvent(paintingEvent);
-                case WeatherEvent weatherEvent -> onWeatherEvent(weatherEvent);
-                default -> {}
+            if (event instanceof EntityEvent) {
+                onEntityEvent((EntityEvent) event);
+            } else if (event instanceof PlayerEvent) {
+                onPlayerEvent((PlayerEvent) event);
+            } else if (event instanceof EnchantItemEvent) {
+                onEnchantmentEvent((EnchantItemEvent) event);
+            } else if (event instanceof InventoryEvent) {
+                onInventoryEvent((InventoryEvent) event);
+            } else if (event instanceof WorldEvent) {
+                onWorldEvent((WorldEvent) event);
+            } else if (event instanceof BlockEvent) {
+                onBlockEvent((BlockEvent) event);
+            } else if (event instanceof VehicleEvent) {
+                onVehicleEvent((VehicleEvent) event);
+            } else if (event instanceof HangingEvent) {
+                onHangingEvent((HangingEvent) event);
+            } else if (event instanceof PaintingEvent) {
+                onPaintingEvent((PaintingEvent) event);
+            } else if (event instanceof WeatherEvent) {
+                onWeatherEvent((WeatherEvent) event);
             }
         }, EventPriority.HIGHEST, plugin, false);
 
