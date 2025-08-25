@@ -1,4 +1,4 @@
-# MinigamesAPI (IN DEVELOPMENT)
+# MinigamesAPI (BETA)
 
 [![Build Status](https://github.com/xFedeT/MinigamesAPI/actions/workflows/gradle.yml/badge.svg)](https://github.com/xFedeT/MinigamesAPI/actions?query=branch%3Amain)
 [![Code Climate](https://codeclimate.com/github/xFedeT/MinigamesAPI/badges/gpa.svg)](https://codeclimate.com/github/xFedeT/MinigamesAPI)
