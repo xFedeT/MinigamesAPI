@@ -14,10 +14,6 @@ import java.util.Map;
 public interface Minigame<P extends Minigame<P>> {
     MinigamesAPI getMinigamesAPI();
 
-    DatabaseProvider getDatabaseService();
-
-    IGameService getGameService();
-
     List<MinigameConfig> registerConfigs();
 
     Map<Class<? extends GameGui<P>>, GameGui<P>> registerGuis();

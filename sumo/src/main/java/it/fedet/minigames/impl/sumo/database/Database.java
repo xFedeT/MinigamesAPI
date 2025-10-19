@@ -9,6 +9,7 @@ import org.bukkit.entity.Player;
 
 import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 
 public class Database extends DatabaseProvider<SumoPlayer> {
 
@@ -66,8 +67,8 @@ public class Database extends DatabaseProvider<SumoPlayer> {
         return Optional.empty();
     }
 
-    public Player getPlayerData(String playerName) {
-        return executeQuery(
+    public CompletableFuture<Player> getPlayerData(String playerName) {
+        return executeAsyncQuery(
                 """
                             SELECT * FROM A;
                         """,

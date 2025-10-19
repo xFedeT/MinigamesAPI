@@ -5,6 +5,7 @@ import it.fedet.minigames.api.game.Game;
 import it.fedet.minigames.api.game.listener.GameListener;
 import it.fedet.minigames.api.game.phase.MinigamePhase;
 import it.fedet.minigames.impl.sumo.Sumo;
+import it.fedet.minigames.impl.sumo.game.SumoGame;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
 
@@ -12,13 +13,13 @@ import java.util.List;
 
 public class PlayingPlayerPhase extends MinigamePhase<Sumo> {
 
-    public PlayingPlayerPhase(Game<Sumo> game) {
+    public PlayingPlayerPhase(SumoGame game) {
         super(game);
     }
 
     @Override
     public MinigamePhase<Sumo> nextPhase() {
-        return new EndingPlayerPhase(game);
+        return new EndingPlayerPhase((SumoGame) game);
     }
 
     @Override

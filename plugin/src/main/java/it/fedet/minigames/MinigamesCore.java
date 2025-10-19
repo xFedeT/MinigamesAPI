@@ -13,12 +13,15 @@ import it.fedet.minigames.api.game.inventory.InventorySnapshot;
 import it.fedet.minigames.api.gui.GameGui;
 import it.fedet.minigames.api.items.GameInventory;
 import it.fedet.minigames.api.provider.MinigamesProvider;
+import it.fedet.minigames.api.services.IWorldService;
 import it.fedet.minigames.api.services.Service;
+import it.fedet.minigames.api.world.storage.IWorldDbProvider;
 import it.fedet.minigames.board.ScoreboardService;
 import it.fedet.minigames.commands.CommandService;
 import it.fedet.minigames.commands.exception.NotLampCommandClassException;
 import it.fedet.minigames.items.ItemService;
 import it.fedet.minigames.player.PlayerService;
+import it.fedet.minigames.world.service.WorldService;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -38,6 +41,8 @@ public final class MinigamesCore extends JavaPlugin implements MinigamesAPI {
     private final Map<Class<? extends GameGui<?>>, SmartInventory> guis = new LinkedHashMap<>();
     private final Map<Class<? extends GameInventory>, GameInventory> inventorys = new LinkedHashMap<>();
     private final Map<Class<? extends GameCommand>, GameCommand> commands = new LinkedHashMap<>();
+
+    private IWorldDbProvider worldDbProvider;
 
     private MinigamesCore instance;
 
@@ -77,6 +82,11 @@ public final class MinigamesCore extends JavaPlugin implements MinigamesAPI {
                         .type(gameGui.getInventoryType())
                         .build()
         );
+    }
+
+    @Override
+    public void registerWorldDbProvider(IWorldDbProvider provider) {
+        this.worldDbProvider = provider;
     }
 
     @Override
@@ -130,6 +140,11 @@ public final class MinigamesCore extends JavaPlugin implements MinigamesAPI {
                     throw new RuntimeException();
 
                 Service object = (Service) service.getConstructor(MinigamesCore.class).newInstance(this);
+
+                if (object instanceof IWorldService) {
+                    ((IWorldService) object).setDbProvider(worldDbProvider);
+                }
+
                 object.start();
 
                 services.put((Class<? extends Service>) service, object);
@@ -187,7 +202,8 @@ public final class MinigamesCore extends JavaPlugin implements MinigamesAPI {
         return new Class<?>[]{
                 PlayerService.class,
                 ItemService.class,
-                ScoreboardService.class
+                ScoreboardService.class,
+                WorldService.class
         };
     }
 

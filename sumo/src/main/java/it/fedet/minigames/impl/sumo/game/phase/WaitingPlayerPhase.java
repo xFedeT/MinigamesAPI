@@ -1,6 +1,7 @@
 package it.fedet.minigames.impl.sumo.game.phase;
 
 import it.fedet.minigames.api.board.GameBoard;
+import it.fedet.minigames.api.game.Game;
 import it.fedet.minigames.api.game.listener.GameListener;
 import it.fedet.minigames.api.game.phase.MinigamePhase;
 import it.fedet.minigames.impl.sumo.Sumo;
@@ -21,7 +22,7 @@ public class WaitingPlayerPhase extends MinigamePhase<Sumo> {
 
     @Override
     public MinigamePhase<Sumo> nextPhase() {
-        return new PlayingPlayerPhase(game);
+        return new PlayingPlayerPhase((SumoGame) game);
     }
 
     @Override
