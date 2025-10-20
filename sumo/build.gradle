@@ -4,6 +4,7 @@ plugins {
 
 dependencies {
     implementation(project(":api"))
+    compileOnly(project(":plugin"))
 }
 
 processResources {
@@ -19,6 +20,6 @@ tasks {
     }
     shadowJar {
         relocate 'com.zaxxer', 'it.fedet.minigames.lib.hikari'
-        archiveFileName = "MinigamesAPI-${project.version}.jar"
+        archiveFileName = "Sumo-${project.version}.jar"
     }
 }

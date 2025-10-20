@@ -8,6 +8,7 @@ import it.fedet.minigames.game.GameService;
 import it.fedet.minigames.impl.sumo.Sumo;
 import it.fedet.minigames.impl.sumo.game.SumoGame;
 import it.fedet.minigames.world.service.WorldService;
+import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
@@ -38,25 +39,16 @@ public class EndingPlayerPhase extends MinigamePhase<Sumo> {
     /**
      * Termina il gioco e scarica il mondo
      */
-    public CompletableFuture<Void> unloadWorld() {
+    public boolean unloadWorld() {
         WorldService worldService = game.getPlugin().getMinigamesAPI().getService(WorldService.class);
 
         World gameWorld = ((SumoGame) game).getGameWorld();
 
         if (gameWorld == null) {
-            return CompletableFuture.completedFuture(null);
+            return false;
         }
 
-        return worldService.unloadWorld(gameWorld)
-                .thenRun(() -> {
-                    ((SumoGame) game).setGameWorld(null);
-                    game.getPlugin().getLogger().info("Game #" + game.getId() + " terminated and world unloaded");
-                })
-                .exceptionally(e -> {
-                    game.getPlugin().getLogger().severe("Failed to terminate game #" + game.getId() + ": " + e.getMessage());
-                    e.printStackTrace();
-                    return null;
-                });
+        return Bukkit.unloadWorld(gameWorld, false);
     }
 
     @Override

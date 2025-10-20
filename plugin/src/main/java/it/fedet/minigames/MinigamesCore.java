@@ -15,13 +15,15 @@ import it.fedet.minigames.api.items.GameInventory;
 import it.fedet.minigames.api.provider.MinigamesProvider;
 import it.fedet.minigames.api.services.IWorldService;
 import it.fedet.minigames.api.services.Service;
-import it.fedet.minigames.api.world.storage.IWorldDbProvider;
 import it.fedet.minigames.board.ScoreboardService;
 import it.fedet.minigames.commands.CommandService;
 import it.fedet.minigames.commands.exception.NotLampCommandClassException;
 import it.fedet.minigames.items.ItemService;
+import it.fedet.minigames.logger.GameLogger;
 import it.fedet.minigames.player.PlayerService;
 import it.fedet.minigames.world.service.WorldService;
+import it.fedet.minigames.world.storage.StorageType;
+import it.fedet.minigames.api.world.providers.WorldDbProvider;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -42,7 +44,8 @@ public final class MinigamesCore extends JavaPlugin implements MinigamesAPI {
     private final Map<Class<? extends GameInventory>, GameInventory> inventorys = new LinkedHashMap<>();
     private final Map<Class<? extends GameCommand>, GameCommand> commands = new LinkedHashMap<>();
 
-    private IWorldDbProvider worldDbProvider;
+    private WorldDbProvider worldDbProvider;
+    private StorageType storageType;
 
     private MinigamesCore instance;
 
@@ -57,7 +60,7 @@ public final class MinigamesCore extends JavaPlugin implements MinigamesAPI {
             for (MinigameConfig setting : configs) {
                 files.put(setting.getClazz(), SettingsManagerBuilder
                         .withYamlFile(
-                                new File(getDataFolder().getAbsolutePath() + setting.getPath(), setting.getFileName())
+                                new File(getDataFolder().getAbsolutePath() + setting.getPath(), setting.getFileName() + ".yml")
                         )
                         .configurationData(setting.getClazz())
                         .useDefaultMigrationService()
@@ -85,8 +88,8 @@ public final class MinigamesCore extends JavaPlugin implements MinigamesAPI {
     }
 
     @Override
-    public void registerWorldDbProvider(IWorldDbProvider provider) {
-        this.worldDbProvider = provider;
+    public <P extends WorldDbProvider> void registerWorldDbProvider(P worldDbProvider) {
+        this.worldDbProvider = worldDbProvider;
     }
 
     @Override
@@ -142,7 +145,7 @@ public final class MinigamesCore extends JavaPlugin implements MinigamesAPI {
                 Service object = (Service) service.getConstructor(MinigamesCore.class).newInstance(this);
 
                 if (object instanceof IWorldService) {
-                    ((IWorldService) object).setDbProvider(worldDbProvider);
+                    ((IWorldService) object).setProvider(worldDbProvider);
                 }
 
                 object.start();
@@ -164,6 +167,7 @@ public final class MinigamesCore extends JavaPlugin implements MinigamesAPI {
 
         //registering gui
         minigame.registerGuis().forEach(this::registerGui);
+
 
         //Saving Inventorys
         inventorys.putAll(minigame.registerInventorys());

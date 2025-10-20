@@ -8,12 +8,13 @@ import it.fedet.minigames.api.game.inventory.InventorySnapshot;
 import it.fedet.minigames.api.gui.GameGui;
 import it.fedet.minigames.api.items.GameInventory;
 import it.fedet.minigames.api.services.Service;
-import it.fedet.minigames.api.world.storage.IWorldDbProvider;
+import it.fedet.minigames.api.world.providers.WorldDbProvider;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public interface MinigamesAPI {
-    void registerWorldDbProvider(IWorldDbProvider provider);
+
+    <P extends WorldDbProvider> void registerWorldDbProvider(P worldDbProvider);
 
     SmartInventory getGui(Class<? extends GameGui<?>> type);
 

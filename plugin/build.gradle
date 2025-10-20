@@ -4,6 +4,8 @@ plugins {
 
 dependencies {
     implementation(project(":api"))
+    compileOnly fileTree(dir: '../libs', include: ['*.jar'])
+
 }
 
 processResources {

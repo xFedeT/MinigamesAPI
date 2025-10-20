@@ -2,10 +2,12 @@ package it.fedet.minigames.items;
 
 import com.viaversion.viaversion.libs.fastutil.Pair;
 import de.tr7zw.nbtapi.NBT;
+import it.fedet.minigames.MinigamesCore;
 import it.fedet.minigames.api.MinigamesAPI;
 import it.fedet.minigames.api.items.IItemService;
 import it.fedet.minigames.api.items.provider.ClickableItem;
 import it.fedet.minigames.api.items.provider.InteractItem;
+import it.fedet.minigames.api.services.Service;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -19,12 +21,12 @@ import java.util.*;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
 
-public class ItemService implements IItemService, Listener {
+public class ItemService implements Service, IItemService, Listener {
 
     private final Map<String, InteractItem> customItems = new HashMap<>();
-    private final MinigamesAPI plugin;
+    private final MinigamesCore plugin;
 
-    protected ItemService(MinigamesAPI plugin) {
+    public ItemService(MinigamesCore plugin) {
         this.plugin = plugin;
     }
 

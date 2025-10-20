@@ -1,22 +1,24 @@
 package it.fedet.minigames.impl.sumo.database;
 
-import it.fedet.minigames.api.world.storage.IWorldDbProvider;
-import it.fedet.minigames.api.world.storage.StorageType;
 
-public class WorldDatabase implements IWorldDbProvider {
+import it.fedet.minigames.api.world.providers.WorldDbProvider;
+import it.fedet.minigames.api.world.storage.IStorageType;
+import it.fedet.minigames.world.storage.StorageType;
+
+public class WorldDatabase implements WorldDbProvider {
     @Override
     public String getConnectionOrHostString() {
-        return "";
+        return "mongodb://localhost:27017";
     }
 
     @Override
     public String getDatabaseName() {
-        return "";
+        return "minigames";
     }
 
     @Override
     public String getTableOrCollectionName() {
-        return "";
+        return "worlds";
     }
 
     @Override
@@ -35,7 +37,7 @@ public class WorldDatabase implements IWorldDbProvider {
     }
 
     @Override
-    public StorageType getType() {
+    public IStorageType getType() {
         return StorageType.MONGODB;
     }
 }

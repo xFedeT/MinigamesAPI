@@ -1,6 +1,10 @@
-package it.fedet.minigames.api.world.storage;
+package it.fedet.minigames.api.world.providers;
 
-public interface IWorldDbProvider {
+
+import it.fedet.minigames.api.world.storage.IStorageType;
+
+public interface WorldDbProvider {
+
     String getConnectionOrHostString();
 
     String getDatabaseName();
@@ -13,5 +17,5 @@ public interface IWorldDbProvider {
 
     int getPort();
 
-    StorageType getType();
+    IStorageType getType();
 }
