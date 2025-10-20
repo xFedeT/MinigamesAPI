@@ -6,6 +6,7 @@ import it.fedet.minigames.MinigamesCore;
 import it.fedet.minigames.api.services.IWorldService;
 import it.fedet.minigames.api.services.Service;
 import it.fedet.minigames.api.world.SlimeLoader;
+import it.fedet.minigames.api.world.data.SlimeWorld;
 import it.fedet.minigames.api.world.exception.*;
 import it.fedet.minigames.utils.LoaderUtils;
 import it.fedet.minigames.world.importer.WorldImporter;
@@ -30,9 +31,8 @@ public class WorldService implements Service, IWorldService {
     private StorageType storageType;
     private WorldDbProvider provider;
 
-    private v1_8_R3SlimeNMS nms;
+    private final v1_8_R3SlimeNMS nms = new v1_8_R3SlimeNMS();
 
-    private final List<CraftSlimeWorld> worlds = new ArrayList<>();
     private final ExecutorService worldGeneratorService = Executors.newFixedThreadPool(1);
 
     public WorldService(MinigamesCore plugin) {
@@ -47,7 +47,6 @@ public class WorldService implements Service, IWorldService {
     @Override
     public void stop() {
         worldGeneratorService.shutdown();
-        worlds.clear();
     }
 
 
@@ -138,7 +137,7 @@ public class WorldService implements Service, IWorldService {
     }
 
     public CompletableFuture<World> generateWorld(CraftSlimeWorld world) {
-        CompletableFuture<World> future = new CompletableFuture();
+        CompletableFuture<World> future = new CompletableFuture<>();
         Objects.requireNonNull(world, "SlimeWorld cannot be null");
         if (!world.isIgnoreLocked() && !world.isReadOnly() && !world.isLocked()) {
             throw new IllegalArgumentException("This world cannot be loaded, as it has not been locked.");
@@ -236,4 +235,5 @@ public class WorldService implements Service, IWorldService {
         this.provider = provider;
         this.storageType = (StorageType) provider.getType();
     }
+
 }

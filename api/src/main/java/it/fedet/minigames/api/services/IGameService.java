@@ -9,6 +9,8 @@ import java.util.Map;
 public interface IGameService extends Service {
 
 
+    TeamService getTeamService();
+
     void registerGame(Game<?> game);
 
     boolean unregisterGame(Game<?> game);

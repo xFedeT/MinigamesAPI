@@ -33,12 +33,12 @@ public abstract class MinigamePhase<P extends JavaPlugin & Minigame<P>> {
 
     public abstract void tick();
 
-    public void start() {
+    public void startPhase() {
         listeners.addAll(Arrays.asList(registerListeners()));
         listeners.sort((Comparator.comparingInt(o -> o.getPriority().getSlot())));
     }
 
-    public void end() {
+    public void endPhase() {
         listeners.clear();
     }
 

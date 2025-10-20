@@ -4,6 +4,7 @@ import it.fedet.minigames.api.game.player.PlayerStatus;
 import it.fedet.minigames.api.game.team.GameTeam;
 import it.fedet.minigames.api.game.team.criteria.DistributionCriteria;
 import it.fedet.minigames.api.game.team.provider.TeamProvider;
+import it.fedet.minigames.impl.sumo.player.DistributionBase;
 import org.bukkit.entity.Player;
 
 import java.util.List;
@@ -33,7 +34,7 @@ public class TeamProviderTest implements TeamProvider {
     @Override
     public List<DistributionCriteria> getCriterias() {
         return List.of(
-
+            new DistributionBase()
         );
     }
 

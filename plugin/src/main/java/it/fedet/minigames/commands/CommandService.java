@@ -3,6 +3,7 @@ package it.fedet.minigames.commands;
 import it.fedet.minigames.MinigamesCore;
 import it.fedet.minigames.api.services.Service;
 import revxrsal.commands.bukkit.BukkitCommandHandler;
+import revxrsal.commands.bukkit.exception.BukkitExceptionAdapter;
 
 public class CommandService implements Service {
 
@@ -13,6 +14,7 @@ public class CommandService implements Service {
         this.plugin = plugin;
         this.handler = BukkitCommandHandler.create(plugin);
         this.handler.enableAdventure();
+        this.handler.setExceptionHandler(BukkitExceptionAdapter.INSTANCE);
     }
 
 

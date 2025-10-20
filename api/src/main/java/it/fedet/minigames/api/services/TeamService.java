@@ -9,7 +9,9 @@ import org.bukkit.plugin.java.JavaPlugin;
 import java.util.Map;
 
 public interface TeamService {
-    <P extends JavaPlugin & Minigame<P>> void addIntoATeam(Player player, Game<P> game);
+    <P extends JavaPlugin & Minigame<P>> boolean addIntoATeam(Player player, Game<P> game);
+
+    int getMaxPlayersPerTeam();
 
     GameTeam getTeam(int id);
 

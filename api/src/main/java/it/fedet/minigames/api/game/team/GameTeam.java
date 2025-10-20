@@ -1,5 +1,6 @@
 package it.fedet.minigames.api.game.team;
 
+import it.fedet.minigames.api.Minigame;
 import it.fedet.minigames.api.MinigamesAPI;
 import it.fedet.minigames.api.game.player.PlayerStatus;
 import it.fedet.minigames.api.loadit.UserData;
@@ -18,22 +19,26 @@ public abstract class GameTeam {
 
     private final int id;
     private final int gameID;
-    protected final Map<UserData, PlayerStatus> members = new ConcurrentHashMap<>();
+    protected final Map<Player, PlayerStatus> members = new ConcurrentHashMap<>();
 
     protected GameTeam(int id, int gameID) {
         this.id = id;
         this.gameID = gameID;
     }
 
-    public <P extends JavaPlugin & MinigamesAPI> void register(Player player, P plugin) {
+    public <P extends JavaPlugin & Minigame<P>> void register(Player player, P plugin) {
         player.setMetadata("team_id", new FixedMetadataValue(plugin, id));
-        members.put(plugin.getService(IPlayerService.class).getPlayer(player), PlayerStatus.ALIVE);
+        if (id == -1) {
+            members.put(player, PlayerStatus.SPECTATOR);
+        } else {
+            members.put(player, PlayerStatus.ALIVE);
+        }
     }
 
-    public <P extends JavaPlugin & MinigamesAPI> void unregister(Player player, P plugin) {
+    public <P extends JavaPlugin & Minigame<P>> void unregister(Player player, P plugin) {
         if (player.hasMetadata("team_id") && player.getMetadata("team_id").get(0).asInt() == id) {
             player.removeMetadata("team_id", plugin);
-            members.remove(plugin.getService(IPlayerService.class).getPlayer(player));
+            members.remove(player);
         }
     }
 
@@ -49,8 +54,6 @@ public abstract class GameTeam {
     public Collection<Player> getPlayers(PlayerStatus status) {
         return members.keySet().stream()
                 .filter(userData -> status == PlayerStatus.INDIFFERENT || members.get(userData) == status)
-                .filter(uPlayer -> uPlayer.getPlayer().isPresent())
-                .map(uPlayer -> uPlayer.getPlayer().get())
                 .filter(player -> player.hasMetadata("game-id") && player.getMetadata("game-id").get(0).asInt() == gameID)
                 .collect(Collectors.toSet());
     }
@@ -60,7 +63,7 @@ public abstract class GameTeam {
     }
 
     public boolean isInTeam(Player player) {
-        for (UserData member : members.keySet()) {
+        for (Player member : members.keySet()) {
             if (member.getName().equalsIgnoreCase(player.getName()))
                 return true;
         }

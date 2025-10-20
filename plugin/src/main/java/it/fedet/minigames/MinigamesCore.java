@@ -3,7 +3,9 @@ package it.fedet.minigames;
 import ch.jalu.configme.SettingsHolder;
 import ch.jalu.configme.SettingsManager;
 import ch.jalu.configme.SettingsManagerBuilder;
+import fr.minuskube.inv.InventoryManager;
 import fr.minuskube.inv.SmartInventory;
+import fr.minuskube.inv.SmartInvsPlugin;
 import it.fedet.minigames.api.Minigame;
 import it.fedet.minigames.api.MinigamesAPI;
 import it.fedet.minigames.api.commands.GameCommand;
@@ -18,6 +20,7 @@ import it.fedet.minigames.api.services.Service;
 import it.fedet.minigames.board.ScoreboardService;
 import it.fedet.minigames.commands.CommandService;
 import it.fedet.minigames.commands.exception.NotLampCommandClassException;
+import it.fedet.minigames.game.GameService;
 import it.fedet.minigames.items.ItemService;
 import it.fedet.minigames.logger.GameLogger;
 import it.fedet.minigames.player.PlayerService;
@@ -83,6 +86,7 @@ public final class MinigamesCore extends JavaPlugin implements MinigamesAPI {
                         .provider(gameGui)
                         .closeable(gameGui.isCloseable())
                         .type(gameGui.getInventoryType())
+                        .manager(new InventoryManager(this))
                         .build()
         );
     }
@@ -136,6 +140,8 @@ public final class MinigamesCore extends JavaPlugin implements MinigamesAPI {
 
     @Override
     public <P extends Minigame<P>> void registerMinigame(Minigame<P> minigame) {
+        this.minigame = minigame;
+
         //Loading all services
         for (Class<?> service : getServices()) {
             try {
@@ -161,8 +167,6 @@ public final class MinigamesCore extends JavaPlugin implements MinigamesAPI {
             }
         }
 
-
-        this.minigame = minigame;
         registerConfig(minigame.registerConfigs());
 
         //registering gui
@@ -207,6 +211,7 @@ public final class MinigamesCore extends JavaPlugin implements MinigamesAPI {
                 PlayerService.class,
                 ItemService.class,
                 ScoreboardService.class,
+                GameService.class,
                 WorldService.class
         };
     }

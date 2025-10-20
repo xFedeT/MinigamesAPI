@@ -5,6 +5,7 @@ import com.flowpowered.nbt.stream.NBTInputStream;
 import com.flowpowered.nbt.stream.NBTOutputStream;
 import com.github.luben.zstd.Zstd;
 import it.fedet.minigames.api.world.SlimeLoader;
+import it.fedet.minigames.api.world.data.SlimeWorld;
 import it.fedet.minigames.api.world.exception.WorldAlreadyExistsException;
 import it.fedet.minigames.world.loader.SlimeFormat;
 import it.fedet.minigames.world.map.SlimePropertyMap;
@@ -17,7 +18,7 @@ import java.nio.ByteOrder;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class CraftSlimeWorld {
+public class CraftSlimeWorld implements SlimeWorld {
     private SlimeLoader loader;
 
     private final String name;
@@ -46,6 +47,7 @@ public class CraftSlimeWorld {
         this.locked = locked;
     }
 
+    @Override
     public String getName() {
         return name;
     }
@@ -69,6 +71,7 @@ public class CraftSlimeWorld {
         }
     }
 
+    @Override
     public CraftSlimeWorld clone(String worldName) {
         try {
             return clone(worldName, null);
@@ -77,10 +80,12 @@ public class CraftSlimeWorld {
         }
     }
 
+    @Override
     public CraftSlimeWorld clone(String worldName, SlimeLoader loader) throws WorldAlreadyExistsException, IOException {
         return clone(worldName, loader, true);
     }
 
+    @Override
     public CraftSlimeWorld clone(String worldName, SlimeLoader loader, boolean lock) throws WorldAlreadyExistsException, IOException {if (name.equals(worldName)) {
         throw new IllegalArgumentException("The clone world cannot have the same name as the original world!");
     }

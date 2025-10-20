@@ -58,6 +58,7 @@ subprojects {
         compileOnly 'net.luckperms:api:5.4'
         compileOnly 'com.github.decentsoftware-eu:decentholograms:2.8.6'
 
+        implementation 'org.yaml:snakeyaml:2.0'
         implementation("ch.jalu:configme:1.4.1") {
             exclude group: "org.yaml", module: "snakeyaml"
         }
@@ -76,7 +77,7 @@ subprojects {
         implementation 'org.mariadb.jdbc:mariadb-java-client:3.2.0'
 
         compileOnly "org.github.paperspigot:paperspigot-api:1.8.8-R0.1-SNAPSHOT"
-        compileOnly "net.kyori:adventure-platform-bukkit:4.1.2"
+        implementation "net.kyori:adventure-platform-bukkit:4.1.2"
         compileOnly 'com.viaversion:viaversion-api:4.9.3-SNAPSHOT'
         compileOnly 'org.itsallcode:holiday-calculator:0.2.0'
 

@@ -3,13 +3,12 @@ package it.fedet.minigames.game;
 import it.fedet.minigames.MinigamesCore;
 import it.fedet.minigames.api.game.Game;
 import it.fedet.minigames.api.services.IGameService;
+import it.fedet.minigames.events.PlayerGameJoinEvent;
+import it.fedet.minigames.events.PlayerGameQuitEvent;
 import it.fedet.minigames.team.TeamService;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
-import org.bukkit.event.HandlerList;
-import org.bukkit.event.Listener;
+import org.bukkit.event.*;
 import org.bukkit.event.block.BlockEvent;
 import org.bukkit.event.enchantment.EnchantItemEvent;
 import org.bukkit.event.entity.EntityEvent;
@@ -17,16 +16,13 @@ import org.bukkit.event.hanging.HangingEvent;
 import org.bukkit.event.inventory.InventoryEvent;
 import org.bukkit.event.painting.PaintingEvent;
 import org.bukkit.event.player.PlayerEvent;
-import org.bukkit.event.server.ServerEvent;
 import org.bukkit.event.vehicle.VehicleEvent;
 import org.bukkit.event.weather.WeatherEvent;
 import org.bukkit.event.world.WorldEvent;
 import org.bukkit.metadata.MetadataValue;
 import org.bukkit.plugin.RegisteredListener;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class GameService implements IGameService, Listener {
@@ -47,6 +43,11 @@ public class GameService implements IGameService, Listener {
                 plugin.getMinigame().registerTeamProvider().getMaxPlayerPerTeams(),
                 plugin.getMinigame().registerTeamProvider().getCriterias()
         );
+    }
+
+    @Override
+    public it.fedet.minigames.api.services.TeamService getTeamService() {
+        return (TeamService) teamService;
     }
 
     @Override
@@ -73,17 +74,21 @@ public class GameService implements IGameService, Listener {
             } else if (event instanceof WeatherEvent) {
                 onWeatherEvent((WeatherEvent) event);
             }
-        }, EventPriority.HIGHEST, plugin, false);
+        }, EventPriority.MONITOR, plugin, true);
 
         for (HandlerList handler : HandlerList.getHandlerLists())
             handler.register(registeredListener);
+
+        PlayerGameJoinEvent.getHandlerList().register(registeredListener);
+        PlayerGameQuitEvent.getHandlerList().register(registeredListener);
 
         gameThread.start();
     }
 
     @Override
-    public void stop() {
+    public void stop() {;
         gameThread.interrupt();
+        activeGames.values().forEach(Game::end);
     }
 
     @Override
@@ -92,6 +97,7 @@ public class GameService implements IGameService, Listener {
         activeGames.put(id, game);
 
         teamService.populateTeams(plugin.getMinigame().registerTeamProvider().teamQuantity(), id);
+        game.start();
     }
 
     @Override

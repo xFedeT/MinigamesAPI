@@ -3,7 +3,7 @@ plugins {
 }
 
 dependencies {
-    implementation(project(":api"))
+    compileOnly(project(":api"))
     compileOnly(project(":plugin"))
 }
 

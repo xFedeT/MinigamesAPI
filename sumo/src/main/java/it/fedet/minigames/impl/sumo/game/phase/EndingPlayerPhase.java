@@ -1,7 +1,6 @@
 package it.fedet.minigames.impl.sumo.game.phase;
 
 import it.fedet.minigames.api.board.GameBoard;
-import it.fedet.minigames.api.game.Game;
 import it.fedet.minigames.api.game.listener.GameListener;
 import it.fedet.minigames.api.game.phase.MinigamePhase;
 import it.fedet.minigames.game.GameService;
@@ -21,6 +20,11 @@ public class EndingPlayerPhase extends MinigamePhase<Sumo> {
 
     public EndingPlayerPhase(SumoGame game) {
         super(game);
+    }
+
+    @Override
+    public void startPhase() {
+        super.startPhase();
 
         unloadWorld();
         game.getPlugin().getMinigamesAPI().getService(GameService.class).unregisterGame(game);

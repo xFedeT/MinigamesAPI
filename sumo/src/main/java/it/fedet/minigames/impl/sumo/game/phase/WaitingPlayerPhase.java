@@ -1,15 +1,14 @@
 package it.fedet.minigames.impl.sumo.game.phase;
 
 import it.fedet.minigames.api.board.GameBoard;
-import it.fedet.minigames.api.game.Game;
 import it.fedet.minigames.api.game.listener.GameListener;
 import it.fedet.minigames.api.game.phase.MinigamePhase;
+import it.fedet.minigames.events.PlayerGameJoinEvent;
 import it.fedet.minigames.impl.sumo.Sumo;
 import it.fedet.minigames.impl.sumo.game.SumoGame;
-import it.fedet.minigames.impl.sumo.guis.ProvaGui;
-import it.fedet.minigames.impl.sumo.inventory.ProvaInventory;
+import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
-import org.bukkit.event.player.PlayerJoinEvent;
 
 import java.util.List;
 
@@ -31,13 +30,13 @@ public class WaitingPlayerPhase extends MinigamePhase<Sumo> {
     }
 
     @Override
-    public void start() {
-        super.start();
+    public void startPhase() {
+        super.startPhase();
     }
 
     @Override
-    public void end() {
-        super.end();
+    public void endPhase() {
+        super.endPhase();
 
         game.next();
     }
@@ -47,12 +46,16 @@ public class WaitingPlayerPhase extends MinigamePhase<Sumo> {
         return new GameBoard() {
             @Override
             public String getTitle() {
-                return "";
+                return "§6§lSUMO - Waiting Phase";
             }
 
             @Override
             public List<String> getLines() {
-                return List.of();
+                return List.of(
+                        "§7Players: §a",
+                        "§7Waiting for more players...",
+                        "§eJoin the fun!"
+                );
             }
         };
     }
@@ -60,19 +63,19 @@ public class WaitingPlayerPhase extends MinigamePhase<Sumo> {
     @Override
     public GameListener<?>[] registerListeners() {
         return new GameListener[]{
-                new GameListener<PlayerJoinEvent>() {
+                new GameListener<PlayerGameJoinEvent>() {
 
                     @Override
-                    public Class<PlayerJoinEvent> getEventClass() {
-                        return PlayerJoinEvent.class;
+                    public Class<PlayerGameJoinEvent> getEventClass() {
+                        return PlayerGameJoinEvent.class;
                     }
 
                     @Override
-                    public void apply(PlayerJoinEvent event) {
-                        event.setJoinMessage("FUNZIONOOOOOOO WAITING PLAYER!");
-
-                        game.getPlugin().getMinigamesAPI().openGui(ProvaGui.class, event.getPlayer());
-                        game.getPlugin().getMinigamesAPI().openInventory(ProvaInventory.class, event.getPlayer());
+                    public void apply(PlayerGameJoinEvent event) {
+                        System.out.println("Player joined the game in WaitingPlayerPhase");
+                        event.getPlayer().teleport(new Location(((SumoGame) event.getGame()).getGameWorld(), 8, 50, 8, 0, 0));
+                        System.out.println("Nuovo Mondo: " + event.getPlayer().getWorld().getName());
+                        System.out.println("Teleported player to game world spawn location");
                     }
                 }
         };

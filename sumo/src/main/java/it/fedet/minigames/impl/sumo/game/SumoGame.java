@@ -3,7 +3,6 @@ package it.fedet.minigames.impl.sumo.game;
 import it.fedet.minigames.api.game.Game;
 import it.fedet.minigames.api.game.GameStatus;
 import it.fedet.minigames.api.game.phase.MinigamePhase;
-import it.fedet.minigames.api.services.IWorldService;
 import it.fedet.minigames.api.world.exception.CorruptedWorldException;
 import it.fedet.minigames.api.world.exception.NewerFormatException;
 import it.fedet.minigames.api.world.exception.UnknownWorldException;
@@ -17,32 +16,39 @@ import it.fedet.minigames.world.storage.StorageType;
 import org.bukkit.World;
 
 import java.io.IOException;
-import java.util.concurrent.CompletableFuture;
 
 public class SumoGame extends Game<Sumo> {
 
     private World gameWorld;
-    private final String worldName = "sumo"; // Nome del mondo template nello storage
 
-    public SumoGame(Sumo game, int gameId) {
-        super(game, gameId);
+    public SumoGame(Sumo plugin, int gameId) {
+        super(plugin, gameId);
 
         WorldService worldService = plugin.getMinigamesAPI().getService(WorldService.class);
 
         try {
-            worldService.loadWorld(LoaderUtils.getLoader(StorageType.MONGODB), worldName, CraftSlimeWorld.SlimeProperties.builder().build())
-                    .thenComposeAsync(slimeWorld -> worldService.generateWorld(slimeWorld)
-                            .thenAccept(world -> {
-                                this.gameWorld = world;
-                                setGameStatus(GameStatus.WAITING);
-                                plugin.getLogger().info("Game #" + getId() + " initialized with world: " + world.getName());
-                            })
-                            .exceptionally(e -> {
-                                plugin.getLogger().severe("Failed to generate world " + worldName + ": " + e.getMessage());
-                                e.printStackTrace();
-                                return null;
-                            })).exceptionally(e -> {
-                        plugin.getLogger().severe("Failed to load world " + worldName + ": " + e.getMessage());
+            worldService.loadWorld(
+                        LoaderUtils.getLoader(StorageType.MONGODB),
+                            "sumo",
+                        CraftSlimeWorld.SlimeProperties.builder()
+                            .pvp(true)
+                            .allowAnimals(false)
+                            .allowMonsters(false)
+                            .difficulty(0)
+                            .ignoreLocked(true)
+                            .readOnly(false)
+                            .build()
+                    )
+                    .thenComposeAsync(slimeWorld -> worldService.generateWorld(slimeWorld.clone("game_" + gameId)))
+                    .thenAccept(world -> {
+                        plugin.getServer().getScheduler().runTask(plugin, () -> {
+                            setGameWorld(world);
+                            setGameStatus(GameStatus.WAITING);
+                            plugin.getLogger().info("Game #" + getId() + " initialized with world: " + world.getName());
+                        });
+                    })
+                    .exceptionally(e -> {
+                        plugin.getLogger().severe("Failed to generate world sumo: " + e.getMessage());
                         e.printStackTrace();
                         return null;
                     });
@@ -51,6 +57,16 @@ public class SumoGame extends Game<Sumo> {
                  WorldInUseException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @Override
+    public void start() {
+        getCurrentPhase().startPhase();
+    }
+
+    @Override
+    public void end() {
+
     }
 
     @Override

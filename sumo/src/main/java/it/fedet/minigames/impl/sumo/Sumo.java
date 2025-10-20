@@ -20,6 +20,8 @@ import it.fedet.minigames.impl.sumo.game.SumoGame;
 import it.fedet.minigames.impl.sumo.game.team.TeamProviderTest;
 import it.fedet.minigames.impl.sumo.guis.ProvaGui;
 import it.fedet.minigames.impl.sumo.inventory.ProvaInventory;
+import it.fedet.minigames.impl.sumo.listener.BaseListener;
+import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.List;
@@ -46,9 +48,11 @@ public class Sumo extends JavaPlugin implements Minigame<Sumo> {
 
         gameService = minigamesAPI.getService(GameService.class);
 
-        for (int id = 0; id < 10; id++) {
+        for (int id = 0; id < 1; id++) {
             gameService.registerGame(new SumoGame(this, id));
         }
+
+        Bukkit.getPluginManager().registerEvents(new BaseListener(this), this);
     }
 
     @Override

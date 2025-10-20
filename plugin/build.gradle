@@ -20,7 +20,9 @@ tasks {
         dependsOn(shadowJar)
     }
     shadowJar {
+        relocate 'org.yaml.snakeyaml', 'it.fedet.minigames.lib.snakeyaml'
         relocate 'com.zaxxer', 'it.fedet.minigames.lib.hikari'
+
         archiveFileName = "MinigamesAPI-${project.version}.jar"
     }
 }
