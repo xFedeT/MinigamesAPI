@@ -39,7 +39,7 @@ subprojects {
             name = 'papermc-repo'
             url = 'https://repo.papermc.io/repository/maven-public/'
         }
-        maven { url = 'https://repo.glaremasters.me/repository/public/'}
+        maven { url = 'https://repo.glaremasters.me/repository/public/' }
         maven { url = 'https://repo.codemc.org/repository/maven-public/' }
         maven { url 'https://jitpack.io' }
         maven { url = 'https://repo.dmulloy2.net/repository/public/' }

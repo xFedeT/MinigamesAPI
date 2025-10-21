@@ -8,7 +8,6 @@ import it.fedet.minigames.events.PlayerGameJoinEvent;
 import it.fedet.minigames.impl.sumo.Sumo;
 import it.fedet.minigames.impl.sumo.game.SumoGame;
 import org.bukkit.Location;
-import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.spigotmc.event.player.PlayerSpawnLocationEvent;
 
@@ -65,19 +64,16 @@ public class WaitingPlayerPhase extends MinigamePhase<Sumo> {
     @Override
     public GameListener<?>[] registerListeners() {
         return new GameListener[]{
-                new GameListener<PlayerSpawnLocationEvent>() {
+                new GameListener<PlayerGameJoinEvent>() {
 
                     @Override
-                    public Class<PlayerSpawnLocationEvent> getEventClass() {
-                        return PlayerSpawnLocationEvent.class;
+                    public Class<PlayerGameJoinEvent> getEventClass() {
+                        return PlayerGameJoinEvent.class;
                     }
 
                     @Override
-                    public void apply(PlayerSpawnLocationEvent event) {
-                        System.out.println("Player joined the game in WaitingPlayerPhase");
-                        System.out.println("Mondo nel game: " + ((SumoGame) game).getGameWorld().getName());
-                        event.setSpawnLocation(new Location(((SumoGame) game).getGameWorld(), 8, 50, 8, 0, 0));
-                        System.out.println("Teleported player to game world spawn location");
+                    public void apply(PlayerGameJoinEvent event) {
+                        event.getPlayer().teleport(new Location(((SumoGame) game).getGameWorld(), 8, 50, 8, 0, 0));
                     }
                 }
         };

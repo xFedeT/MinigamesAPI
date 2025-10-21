@@ -24,7 +24,7 @@ public class BaseListener implements Listener {
     }
 
     @EventHandler
-    public void onJoin(PlayerLoginEvent event) {
+    public void onJoin(PlayerJoinEvent event) {
         TeamService teamService = plugin.getGameService().getTeamService();
         for (Game<?> game : plugin.getMinigamesAPI().getService(GameService.class).getActiveGames().values()) {
             if (teamService.addIntoATeam(event.getPlayer(), game)) {
@@ -35,13 +35,5 @@ public class BaseListener implements Listener {
         }
     }
 
-    @EventHandler
-    public void onSpawn(PlayerSpawnLocationEvent event) {
-        System.out.println("Player joined the game in WaitingPlayerPhase");
-        Game game = plugin.getGameService().getGameBy(event.getPlayer());
-        System.out.println("Mondo nel game: " + ((SumoGame) game).getGameWorld().getName());
-        event.setSpawnLocation(new Location(((SumoGame) game).getGameWorld(), 8, 50, 8, 0, 0));
-        System.out.println("Teleported player to game world spawn location");
-    }
 
 }

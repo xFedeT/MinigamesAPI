@@ -20,5 +20,6 @@ public interface IGameService extends Service {
     Map<Integer, Game<?>> getActiveGames();
 
     Game<?> getGameBy(Player player);
+
     Game<?> getGameBy(World world);
 }

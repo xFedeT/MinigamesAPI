@@ -34,7 +34,7 @@ public class TeamProviderTest implements TeamProvider {
     @Override
     public List<DistributionCriteria> getCriterias() {
         return List.of(
-            new DistributionBase()
+                new DistributionBase()
         );
     }
 

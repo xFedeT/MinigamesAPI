@@ -3,7 +3,7 @@ plugins {
 }
 
 dependencies {
-    compileOnly(project(":api"))
+    implementation(project(":api"))
     compileOnly(project(':classmodifier'))
 
     implementation 'com.mojang:datafixerupper:1.0.20'

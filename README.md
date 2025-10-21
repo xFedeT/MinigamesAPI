@@ -13,12 +13,12 @@ A Minigame Plugin/API core that allow to create custom Minigame
 - Better performance
 - Better optimization
 
-
 ## How it works
 
-
 ### Integration
+
 Start using MinigamesAPI by adding this to your pom.xml:
+
 ```xml
 <repositories>
     <repository>
@@ -37,6 +37,7 @@ Start using MinigamesAPI by adding this to your pom.xml:
 ```
 
 or build.gradle:
+
 ```kotlin
   repositories {
     maven { url 'https://jitpack.io' }
@@ -46,10 +47,11 @@ or build.gradle:
     implementation 'com.github.xFedeT:MinigamesAPI:VERSION'
   }
 ```
-  
+
 ### Getting Started
 
 **Getting MinigamesAPI in you project**
+
 ```java
 public class YourPlugin extends JavaPlugin implements Minigame {
     @Override
@@ -59,6 +61,7 @@ public class YourPlugin extends JavaPlugin implements Minigame {
     }
 }
 ```
+
 :pencil: Read the full documentation in the [MinigamesAPI Wiki](https://github.com/xFedeT/MinigamesAPI/wiki).
 
 :pencil: See a full working example based on this

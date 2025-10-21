@@ -3,17 +3,16 @@ package it.fedet.minigames.game;
 import it.fedet.minigames.MinigamesCore;
 import it.fedet.minigames.api.game.Game;
 import it.fedet.minigames.api.services.IGameService;
-import it.fedet.minigames.events.PlayerGameJoinEvent;
-import it.fedet.minigames.events.PlayerGameQuitEvent;
 import it.fedet.minigames.team.TeamService;
+import org.bukkit.Chunk;
 import org.bukkit.World;
+import org.bukkit.block.Block;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
-import org.bukkit.event.HandlerList;
+import org.bukkit.entity.Vehicle;
+import org.bukkit.event.Event;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockEvent;
-import org.bukkit.event.enchantment.EnchantItemEvent;
 import org.bukkit.event.entity.EntityEvent;
 import org.bukkit.event.hanging.HangingEvent;
 import org.bukkit.event.inventory.InventoryEvent;
@@ -21,23 +20,27 @@ import org.bukkit.event.painting.PaintingEvent;
 import org.bukkit.event.player.PlayerEvent;
 import org.bukkit.event.vehicle.VehicleEvent;
 import org.bukkit.event.weather.WeatherEvent;
+import org.bukkit.event.world.ChunkEvent;
 import org.bukkit.event.world.WorldEvent;
+import org.bukkit.inventory.InventoryView;
 import org.bukkit.metadata.MetadataValue;
-import org.bukkit.plugin.RegisteredListener;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+/**
+ * Template listener that exposes a method per concrete Bukkit event (1.8.8).
+ * Each handler forwards the event to the corresponding game's current phase.
+ *
+ * Note: this is intentionally verbose: one handler method per event type.
+ */
 public class GameService implements IGameService, Listener {
 
     private final MinigamesCore plugin;
-
     private final Map<Integer, Game<?>> activeGames = new ConcurrentHashMap<>();
-
     private final TeamService teamService;
-
     private final Thread gameThread = new Thread(() -> activeGames.forEach((id, game) -> game.tick()));
 
     public GameService(MinigamesCore plugin) {
@@ -57,36 +60,7 @@ public class GameService implements IGameService, Listener {
 
     @Override
     public void start() {
-        RegisteredListener registeredListener = new RegisteredListener(this, (listener, event) -> {
-            if (event instanceof EntityEvent) {
-                onEntityEvent((EntityEvent) event);
-            } else if (event instanceof PlayerEvent) {
-                onPlayerEvent((PlayerEvent) event);
-            } else if (event instanceof EnchantItemEvent) {
-                onEnchantmentEvent((EnchantItemEvent) event);
-            } else if (event instanceof InventoryEvent) {
-                onInventoryEvent((InventoryEvent) event);
-            } else if (event instanceof WorldEvent) {
-                onWorldEvent((WorldEvent) event);
-            } else if (event instanceof BlockEvent) {
-                onBlockEvent((BlockEvent) event);
-            } else if (event instanceof VehicleEvent) {
-                onVehicleEvent((VehicleEvent) event);
-            } else if (event instanceof HangingEvent) {
-                onHangingEvent((HangingEvent) event);
-            } else if (event instanceof PaintingEvent) {
-                onPaintingEvent((PaintingEvent) event);
-            } else if (event instanceof WeatherEvent) {
-                onWeatherEvent((WeatherEvent) event);
-            }
-        }, EventPriority.MONITOR, plugin, true);
-
-        for (HandlerList handler : HandlerList.getHandlerLists())
-            handler.register(registeredListener);
-
-        PlayerGameJoinEvent.getHandlerList().register(registeredListener);
-        PlayerGameQuitEvent.getHandlerList().register(registeredListener);
-
+        plugin.getServer().getPluginManager().registerEvents(new GameListener(this), plugin);
         gameThread.start();
     }
 
@@ -130,7 +104,6 @@ public class GameService implements IGameService, Listener {
         return activeGames.get(values.get(0).asInt());
     }
 
-    // Helper method per estrarre il game ID dal nome del mondo
     @Override
     public Game<?> getGameBy(World world) {
         if (!world.getName().startsWith("game_")) return null;
@@ -143,73 +116,106 @@ public class GameService implements IGameService, Listener {
         }
     }
 
-    @EventHandler
-    private void onEntityEvent(EntityEvent event) {
-        Game<?> game = getGameBy(event.getEntity().getWorld());
+    /* -------------------------
+       Generic dispatcher helper
+       ------------------------- */
+    protected void dispatchToGame(Event event) {
+        Game<?> game = resolveGameFromEvent(event);
+
+        // Final null-check and dispatch
         if (game == null || !activeGames.containsValue(game)) return;
         game.getCurrentPhase().applyEvent(event);
     }
 
-    @EventHandler
-    private void onInventoryEvent(InventoryEvent event) {
-        Game<?> game = getGameBy(event.getView().getPlayer().getWorld());
-        if (game == null || !activeGames.containsValue(game)) return;
-        game.getCurrentPhase().applyEvent(event);
+    /**
+     * Risolve il gioco da un evento coprendo tutte le categorie di eventi di Bukkit/Spigot
+     */
+    private Game<?> resolveGameFromEvent(Event event) {
+        // Player events
+        if (event instanceof PlayerEvent) {
+            return getGameBy(((PlayerEvent) event).getPlayer());
+        }
+
+        // Entity events
+        if (event instanceof EntityEvent) {
+            Entity entity = ((EntityEvent) event).getEntity();
+            if (entity instanceof Player) {
+                return getGameBy((Player) entity);
+            }
+            if (entity != null && entity.getWorld() != null) {
+                return getGameBy(entity.getWorld());
+            }
+        }
+
+        // Block events
+        if (event instanceof BlockEvent) {
+            Block block = ((BlockEvent) event).getBlock();
+            if (block != null && block.getWorld() != null) {
+                return getGameBy(block.getWorld());
+            }
+        }
+
+        // Inventory events
+        if (event instanceof InventoryEvent) {
+            try {
+                InventoryView view = ((InventoryEvent) event).getView();
+                if (view != null && view.getPlayer() instanceof Player) {
+                    return getGameBy((Player) view.getPlayer());
+                }
+            } catch (Throwable ignored) {}
+        }
+
+        // World events
+        if (event instanceof WorldEvent) {
+            World world = ((WorldEvent) event).getWorld();
+            if (world != null) {
+                return getGameBy(world);
+            }
+        }
+
+        // Chunk events
+        if (event instanceof ChunkEvent) {
+            Chunk chunk = ((ChunkEvent) event).getChunk();
+            if (chunk != null && chunk.getWorld() != null) {
+                return getGameBy(chunk.getWorld());
+            }
+        }
+
+        // Weather events
+        if (event instanceof WeatherEvent) {
+            World world = ((WeatherEvent) event).getWorld();
+            if (world != null) {
+                return getGameBy(world);
+            }
+        }
+
+        // Vehicle events
+        if (event instanceof VehicleEvent) {
+            Vehicle vehicle = ((VehicleEvent) event).getVehicle();
+            if (vehicle != null && vehicle.getWorld() != null) {
+                return getGameBy(vehicle.getWorld());
+            }
+        }
+
+        // Hanging events (includes PaintingEvent)
+        if (event instanceof HangingEvent) {
+            Entity entity = ((HangingEvent) event).getEntity();
+            if (entity != null && entity.getWorld() != null) {
+                return getGameBy(entity.getWorld());
+            }
+        }
+
+        // Painting events (specific case of Hanging)
+        if (event instanceof PaintingEvent) {
+            Entity entity = ((PaintingEvent) event).getPainting().getVehicle();
+            if (entity != null && entity.getWorld() != null) {
+                return getGameBy(entity.getWorld());
+            }
+        }
+
+        return null;
     }
 
-    @EventHandler
-    private void onWorldEvent(WorldEvent event) {
-        Game<?> game = getGameBy(event.getWorld());
-        if (game == null || !activeGames.containsValue(game)) return;
-        game.getCurrentPhase().applyEvent(event);
-    }
 
-    @EventHandler
-    private void onPlayerEvent(PlayerEvent event) {
-        Game<?> game = getGameBy(event.getPlayer());
-        if (game == null || !activeGames.containsValue(game)) return;
-        game.getCurrentPhase().applyEvent(event);
-    }
 
-    @EventHandler
-    private void onBlockEvent(BlockEvent event) {
-        Game<?> game = getGameBy(event.getBlock().getWorld());
-        if (game == null || !activeGames.containsValue(game)) return;
-        game.getCurrentPhase().applyEvent(event);
-    }
-
-    @EventHandler
-    private void onVehicleEvent(VehicleEvent event) {
-        Game<?> game = getGameBy(event.getVehicle().getWorld());
-        if (game == null || !activeGames.containsValue(game)) return;
-        game.getCurrentPhase().applyEvent(event);
-    }
-
-    @EventHandler
-    private void onHangingEvent(HangingEvent event) {
-        Game<?> game = getGameBy(event.getEntity().getWorld());
-        if (game == null || !activeGames.containsValue(game)) return;
-        game.getCurrentPhase().applyEvent(event);
-    }
-
-    @EventHandler
-    private void onPaintingEvent(PaintingEvent event) {
-        Game<?> game = getGameBy(event.getPainting().getWorld());
-        if (game == null || !activeGames.containsValue(game)) return;
-        game.getCurrentPhase().applyEvent(event);
-    }
-
-    @EventHandler
-    private void onWeatherEvent(WeatherEvent event) {
-        Game<?> game = getGameBy(event.getWorld());
-        if (game == null || !activeGames.containsValue(game)) return;
-        game.getCurrentPhase().applyEvent(event);
-    }
-
-    @EventHandler
-    private void onEnchantmentEvent(EnchantItemEvent event) {
-        Game<?> game = getGameBy(event.getView().getPlayer().getWorld());
-        if (game == null || !activeGames.containsValue(game)) return;
-        game.getCurrentPhase().applyEvent(event);
-    }
 }

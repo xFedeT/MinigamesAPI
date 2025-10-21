@@ -1,8 +1,8 @@
 package it.fedet.minigames.impl.sumo.database;
 
 
-import it.fedet.minigames.api.swm.database.StorageType;
-import it.fedet.minigames.api.swm.database.WorldDbProvider;
+import it.fedet.minigames.api.world.database.StorageType;
+import it.fedet.minigames.api.world.database.WorldDbProvider;
 
 
 public class WorldDatabase implements WorldDbProvider {

@@ -29,12 +29,12 @@ public class Database extends DatabaseProvider<SumoPlayer> {
 
     @Override
     public String getUser() {
-        return "FedeT_";
+        return "root";
     }
 
     @Override
     public String getPassword() {
-        return "PippoPluto1234";
+        return "";
     }
 
     @Override

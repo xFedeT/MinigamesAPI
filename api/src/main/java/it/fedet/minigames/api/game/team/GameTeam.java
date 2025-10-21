@@ -1,10 +1,8 @@
 package it.fedet.minigames.api.game.team;
 
 import it.fedet.minigames.api.Minigame;
-import it.fedet.minigames.api.MinigamesAPI;
 import it.fedet.minigames.api.game.player.PlayerStatus;
 import it.fedet.minigames.api.loadit.UserData;
-import it.fedet.minigames.api.services.IPlayerService;
 import org.bukkit.entity.Player;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.plugin.java.JavaPlugin;

@@ -7,6 +7,7 @@ import it.fedet.minigames.api.function.ThrowableFunction;
 import it.fedet.minigames.api.game.database.loader.UserDataLoader;
 import it.fedet.minigames.api.loadit.UserData;
 import it.fedet.minigames.api.loadit.impl.Loadit;
+import it.fedet.minigames.api.logging.Logging;
 import it.fedet.minigames.api.services.DatabaseService;
 import org.bukkit.plugin.Plugin;
 import org.intellij.lang.annotations.Language;
@@ -61,10 +62,23 @@ public abstract class DatabaseProvider<U extends UserData> implements DatabaseSe
 
     @Override
     public void start() {
+        Logging.info(DatabaseService.class, "Starting database service...");
         dataSource.setJdbcUrl(getJdbcURL());
         dataSource.setUsername(getUser());
-        dataSource.setPassword(getPassword());
+        if (!getPassword().isEmpty()) {
+            dataSource.setPassword(getPassword());
+        }
+
         loadit = Loadit.createInstance((Plugin) plugin, getUserDataLoader());
+
+        Logging.info(DatabaseService.class, "Attempting to connect to the database...");
+        try (Connection connection = getConnection()) {
+        } catch (SQLException e) {
+            e.printStackTrace();
+            Logging.error(DatabaseService.class, "Failed to connect to the database!");
+            return;
+        }
+        Logging.info(DatabaseService.class, "Connected to the database!");
     }
 
     @Override
@@ -76,6 +90,7 @@ public abstract class DatabaseProvider<U extends UserData> implements DatabaseSe
 
     private Connection getConnection() throws SQLException {
         try (Connection connection = dataSource.getConnection()) {
+            Logging.info(DatabaseService.class, "Successfully connected to the database!");
             return connection;
         }
     }

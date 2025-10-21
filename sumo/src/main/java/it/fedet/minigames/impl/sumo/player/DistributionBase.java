@@ -33,7 +33,7 @@ public class DistributionBase implements DistributionCriteria {
         if (teamOpt.isPresent()) {
             GameTeam team = teamOpt.get();
             team.register(player, game.getPlugin());
-            return  DistributionResult.SUCCESS;
+            return DistributionResult.SUCCESS;
         } else {
             return DistributionResult.FAILURE;
         }

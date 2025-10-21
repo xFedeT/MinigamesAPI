@@ -9,7 +9,6 @@ import it.fedet.minigames.api.gui.GameGui;
 import it.fedet.minigames.api.items.GameInventory;
 import it.fedet.minigames.api.provider.MinigamesProvider;
 import it.fedet.minigames.api.services.IGameService;
-
 import it.fedet.minigames.game.GameService;
 import it.fedet.minigames.impl.sumo.commands.Commands;
 import it.fedet.minigames.impl.sumo.config.ConfigFile;
@@ -31,15 +30,12 @@ public class Sumo extends JavaPlugin implements Minigame<Sumo> {
 
     private MinigamesAPI minigamesAPI;
     private IGameService gameService;
-    private Database databaseService;
 
     @Override
     public void onEnable() {
         minigamesAPI = MinigamesProvider.get();
 
-        this.databaseService = new Database(minigamesAPI);
-
-        minigamesAPI.registerDatabaseProvider(databaseService);
+        minigamesAPI.registerDatabaseProvider(new Database(minigamesAPI));
         minigamesAPI.registerWorldDbProvider(new WorldDatabase());
 
         minigamesAPI.registerMinigame(this);
@@ -66,7 +62,7 @@ public class Sumo extends JavaPlugin implements Minigame<Sumo> {
     }
 
     public Database getDatabaseService() {
-        return databaseService;
+        return minigamesAPI.getService(Database.class);
     }
 
     public IGameService getGameService() {

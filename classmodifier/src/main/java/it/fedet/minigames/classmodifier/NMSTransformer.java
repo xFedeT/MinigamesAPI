@@ -1,11 +1,6 @@
 package it.fedet.minigames.classmodifier;
 
-import javassist.LoaderClassPath;
-import javassist.CannotCompileException;
-import javassist.ClassPool;
-import javassist.CtClass;
-import javassist.CtMethod;
-import javassist.NotFoundException;
+import javassist.*;
 import org.yaml.snakeyaml.Yaml;
 
 import java.io.ByteArrayOutputStream;

@@ -3,7 +3,7 @@ plugins {
 }
 
 dependencies {
-    implementation(project(":api"))
+
     implementation 'com.mojang:datafixerupper:1.0.20'
     implementation 'org.javassist:javassist:3.30.2-GA'
 }

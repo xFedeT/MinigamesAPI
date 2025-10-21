@@ -6,7 +6,7 @@ import it.fedet.minigames.api.game.phase.MinigamePhase;
 import it.fedet.minigames.game.GameService;
 import it.fedet.minigames.impl.sumo.Sumo;
 import it.fedet.minigames.impl.sumo.game.SumoGame;
-import it.fedet.minigames.swm.service.WorldService;
+import it.fedet.minigames.world.service.WorldService;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
