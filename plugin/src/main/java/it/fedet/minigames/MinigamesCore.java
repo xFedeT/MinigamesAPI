@@ -5,7 +5,6 @@ import ch.jalu.configme.SettingsManager;
 import ch.jalu.configme.SettingsManagerBuilder;
 import fr.minuskube.inv.InventoryManager;
 import fr.minuskube.inv.SmartInventory;
-import fr.minuskube.inv.SmartInvsPlugin;
 import it.fedet.minigames.api.Minigame;
 import it.fedet.minigames.api.MinigamesAPI;
 import it.fedet.minigames.api.commands.GameCommand;
@@ -22,7 +21,6 @@ import it.fedet.minigames.commands.CommandService;
 import it.fedet.minigames.commands.exception.NotLampCommandClassException;
 import it.fedet.minigames.game.GameService;
 import it.fedet.minigames.items.ItemService;
-import it.fedet.minigames.logger.GameLogger;
 import it.fedet.minigames.player.PlayerService;
 import it.fedet.minigames.world.service.WorldService;
 import it.fedet.minigames.world.storage.StorageType;
@@ -51,6 +49,7 @@ public final class MinigamesCore extends JavaPlugin implements MinigamesAPI {
     private StorageType storageType;
 
     private MinigamesCore instance;
+
 
     @Override
     public void onEnable() {

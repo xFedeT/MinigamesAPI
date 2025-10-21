@@ -1,4 +1,14 @@
+//
+// Source code recreated from a .class file by IntelliJ IDEA
+// (powered by FernFlower decompiler)
+//
+
 package it.fedet.minigames.world.nms;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
+import java.util.concurrent.CompletableFuture;
 
 import it.fedet.minigames.api.world.events.WorldASyncLoadEvent;
 import it.fedet.minigames.api.world.events.WorldSyncLoadEvent;
@@ -12,23 +22,17 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
+import org.bukkit.World.Environment;
+import org.bukkit.craftbukkit.v1_8_R3.CraftServer;
 import org.bukkit.craftbukkit.v1_8_R3.CraftWorld;
 import org.bukkit.event.Event;
 import org.bukkit.event.world.WorldInitEvent;
 import org.bukkit.event.world.WorldLoadEvent;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.concurrent.CompletableFuture;
-
 public class v1_8_R3SlimeNMS {
-
     private static final Logger LOGGER = LogManager.getLogger("SWM");
-
-    private final byte worldVersion = 0x01;
-
-    private boolean loadingDefaultWorlds = true; // If true, the addWorld method will not be skipped
-
+    private final byte worldVersion = 1;
+    private boolean loadingDefaultWorlds = true;
     private WorldServer defaultWorld;
     private WorldServer defaultNetherWorld;
     private WorldServer defaultEndWorld;
@@ -36,55 +40,54 @@ public class v1_8_R3SlimeNMS {
     public v1_8_R3SlimeNMS() {
         try {
             CraftCLSMBridge.initialize(this);
-        }  catch (NoClassDefFoundError ex) {
+        } catch (NoClassDefFoundError var2) {
             LOGGER.error("Failed to find ClassModifier classes. Are you sure you installed it correctly?");
-            System.exit(1); // No ClassModifier, no party
+            System.exit(1);
         }
+
     }
 
     public void setDefaultWorlds(CraftSlimeWorld normalWorld, CraftSlimeWorld netherWorld, CraftSlimeWorld endWorld) {
         if (normalWorld != null) {
-            World.Environment env = World.Environment.valueOf(normalWorld.getPropertyMap().getString(SlimeProperties.ENVIRONMENT).toUpperCase());
-
-            if (env != World.Environment.NORMAL) {
+            World.Environment env = Environment.valueOf(normalWorld.getPropertyMap().getString(SlimeProperties.ENVIRONMENT).toUpperCase());
+            if (env != Environment.NORMAL) {
                 LOGGER.warn("The environment for the default world must always be 'NORMAL'.");
             }
 
-            defaultWorld = new CustomWorldServer((CraftSlimeWorld) normalWorld, new CustomDataManager(normalWorld), 0);
+            this.defaultWorld = new CustomWorldServer((CraftSlimeWorld)normalWorld, new CustomDataManager(normalWorld), 0);
         }
 
         if (netherWorld != null) {
-            World.Environment env = World.Environment.valueOf(netherWorld.getPropertyMap().getString(SlimeProperties.ENVIRONMENT).toUpperCase());
-            defaultNetherWorld = new CustomWorldServer((CraftSlimeWorld) netherWorld, new CustomDataManager(netherWorld), env.getId());
+            World.Environment env = Environment.valueOf(netherWorld.getPropertyMap().getString(SlimeProperties.ENVIRONMENT).toUpperCase());
+            this.defaultNetherWorld = new CustomWorldServer((CraftSlimeWorld)netherWorld, new CustomDataManager(netherWorld), env.getId());
         }
 
         if (endWorld != null) {
-            World.Environment env = World.Environment.valueOf(endWorld.getPropertyMap().getString(SlimeProperties.ENVIRONMENT).toUpperCase());
-            defaultEndWorld = new CustomWorldServer((CraftSlimeWorld) endWorld, new CustomDataManager(endWorld), env.getId());
+            World.Environment env = Environment.valueOf(endWorld.getPropertyMap().getString(SlimeProperties.ENVIRONMENT).toUpperCase());
+            this.defaultEndWorld = new CustomWorldServer((CraftSlimeWorld)endWorld, new CustomDataManager(endWorld), env.getId());
         }
 
-        loadingDefaultWorlds = false;
+        this.loadingDefaultWorlds = false;
     }
 
     public Object createNMSWorld(CraftSlimeWorld world) {
         CustomDataManager dataManager = new CustomDataManager(world);
-        MinecraftServer mcServer = MinecraftServer.getServer();
+        MinecraftServer mcServer = ((CraftServer) Bukkit.getServer()).getServer();
 
-        int dimension = CraftWorld.CUSTOM_DIMENSION_OFFSET + mcServer.worlds.size();
+        int dimension = 10 + mcServer.worlds.size();
         boolean used = false;
 
         do {
-            for (WorldServer server : mcServer.worlds) {
+            for(WorldServer server : mcServer.worlds) {
                 used = server.dimension == dimension;
-
                 if (used) {
-                    dimension++;
+                    ++dimension;
                     break;
                 }
             }
-        } while (used);
+        } while(used);
 
-        return new CustomWorldServer(world, dataManager, dimension);
+        return new CustomWorldServer((CraftSlimeWorld)world, dataManager, dimension);
     }
 
     public CompletableFuture<World> generateWorld(CraftSlimeWorld world) {
@@ -126,32 +129,33 @@ public class v1_8_R3SlimeNMS {
     }
 
     public CraftSlimeWorld getSlimeWorld(World world) {
-        CraftWorld craftWorld = (CraftWorld) world;
-
-        if (!(craftWorld.getHandle() instanceof CustomWorldServer worldServer)) {
+        CraftWorld craftWorld = (CraftWorld)world;
+        if (!(craftWorld.getHandle() instanceof CustomWorldServer)) {
             return null;
+        } else {
+            CustomWorldServer worldServer = (CustomWorldServer)craftWorld.getHandle();
+            return worldServer.getSlimeWorld();
         }
-
-        return worldServer.getSlimeWorld();
     }
 
     public byte getWorldVersion() {
-        return worldVersion;
-    }
-
-    public WorldServer getDefaultEndWorld() {
-        return defaultEndWorld;
-    }
-
-    public WorldServer getDefaultNetherWorld() {
-        return defaultNetherWorld;
-    }
-
-    public WorldServer getDefaultWorld() {
-        return defaultWorld;
+        Objects.requireNonNull(this);
+        return 1;
     }
 
     public boolean isLoadingDefaultWorlds() {
-        return loadingDefaultWorlds;
+        return this.loadingDefaultWorlds;
+    }
+
+    public WorldServer getDefaultWorld() {
+        return this.defaultWorld;
+    }
+
+    public WorldServer getDefaultNetherWorld() {
+        return this.defaultNetherWorld;
+    }
+
+    public WorldServer getDefaultEndWorld() {
+        return this.defaultEndWorld;
     }
 }

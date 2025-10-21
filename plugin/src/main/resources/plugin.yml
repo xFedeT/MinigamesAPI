@@ -3,3 +3,4 @@ version: '${version}'
 main: it.fedet.minigames.MinigamesCore
 prefix: MinigamesCore
 authors: [ xFedeT ]
+load: POSTWORLD

@@ -1,10 +1,13 @@
 package it.fedet.minigames.world.nms.bridge;
 
+
+import it.fedet.minigames.classmodifier.CLSMBridge;
+import it.fedet.minigames.classmodifier.ClassModifier;
 import it.fedet.minigames.world.nms.v1_8_R3SlimeNMS;
 import it.fedet.minigames.world.nms.world.CustomWorldServer;
 import net.minecraft.server.v1_8_R3.WorldServer;
 
-public class CraftCLSMBridge {
+public class CraftCLSMBridge implements CLSMBridge {
 
     private final v1_8_R3SlimeNMS nmsInstance;
 
@@ -12,6 +15,7 @@ public class CraftCLSMBridge {
         this.nmsInstance = nmsInstance;
     }
 
+    @Override
     public Object[] getDefaultWorlds() {
         WorldServer defaultWorld = nmsInstance.getDefaultWorld();
         WorldServer netherWorld = nmsInstance.getDefaultNetherWorld();
@@ -25,10 +29,12 @@ public class CraftCLSMBridge {
         return null;
     }
 
+    @Override
     public boolean isCustomWorld(Object world) {
         return world instanceof CustomWorldServer;
     }
 
+    @Override
     public boolean skipWorldAdd(Object world) {
         if (!isCustomWorld(world) || nmsInstance.isLoadingDefaultWorlds()) {
             return false;
@@ -40,9 +46,5 @@ public class CraftCLSMBridge {
 
     public static void initialize(v1_8_R3SlimeNMS instance) {
         ClassModifier.setLoader(new CraftCLSMBridge(instance));
-    }
-
-    public v1_8_R3SlimeNMS getNmsInstance() {
-        return nmsInstance;
     }
 }

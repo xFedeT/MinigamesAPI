@@ -27,28 +27,19 @@ public class SumoGame extends Game<Sumo> {
         WorldService worldService = plugin.getMinigamesAPI().getService(WorldService.class);
 
         try {
-            worldService.loadWorld(
-                        LoaderUtils.getLoader(StorageType.MONGODB),
-                            "sumo",
-                        CraftSlimeWorld.SlimeProperties.builder()
-                            .pvp(true)
-                            .allowAnimals(false)
-                            .allowMonsters(false)
-                            .difficulty(0)
-                            .ignoreLocked(true)
-                            .readOnly(false)
-                            .build()
-                    )
-                    .thenComposeAsync(slimeWorld -> worldService.generateWorld(slimeWorld.clone("game_" + gameId)))
-                    .thenAccept(world -> {
-                        plugin.getServer().getScheduler().runTask(plugin, () -> {
-                            setGameWorld(world);
-                            setGameStatus(GameStatus.WAITING);
-                            plugin.getLogger().info("Game #" + getId() + " initialized with world: " + world.getName());
-                        });
-                    })
-                    .exceptionally(e -> {
-                        plugin.getLogger().severe("Failed to generate world sumo: " + e.getMessage());
+            worldService.loadWorld(LoaderUtils.getLoader(StorageType.MONGODB), "sumo", CraftSlimeWorld.SlimeProperties.builder().build())
+                    .thenComposeAsync(slimeWorld -> worldService.generateWorld(slimeWorld)
+                            .thenAccept(world -> {
+                                this.gameWorld = world;
+                                setGameStatus(GameStatus.WAITING);
+                                plugin.getLogger().info("Game #" + getId() + " initialized with world: " + world.getName());
+                            })
+                            .exceptionally(e -> {
+                                plugin.getLogger().severe("Failed to generate world sumo: " + e.getMessage());
+                                e.printStackTrace();
+                                return null;
+                            })).exceptionally(e -> {
+                        plugin.getLogger().severe("Failed to load world sumo: " + e.getMessage());
                         e.printStackTrace();
                         return null;
                     });

@@ -16,6 +16,7 @@ import it.fedet.minigames.world.nms.v1_8_R3SlimeNMS;
 import it.fedet.minigames.world.nms.world.CraftSlimeWorld;
 import it.fedet.minigames.world.storage.StorageType;
 import it.fedet.minigames.api.world.providers.WorldDbProvider;
+import it.fedet.minigames.world.unlocker.WorldUnlocker;
 import org.bukkit.*;
 
 import java.io.*;
@@ -41,6 +42,8 @@ public class WorldService implements Service, IWorldService {
 
     @Override
     public void start() {
+        plugin.getServer().getPluginManager().registerEvents(new WorldUnlocker(this), plugin);
+
         LoaderUtils.registerLoaders(storageType, provider);
     }
 
@@ -236,4 +239,11 @@ public class WorldService implements Service, IWorldService {
         this.storageType = (StorageType) provider.getType();
     }
 
+    public v1_8_R3SlimeNMS getNms() {
+        return nms;
+    }
+
+    public MinigamesCore getPlugin() {
+        return plugin;
+    }
 }

@@ -1,6 +1,7 @@
 package it.fedet.minigames.impl.sumo.game.phase;
 
 import it.fedet.minigames.api.board.GameBoard;
+import it.fedet.minigames.api.game.Game;
 import it.fedet.minigames.api.game.listener.GameListener;
 import it.fedet.minigames.api.game.phase.MinigamePhase;
 import it.fedet.minigames.events.PlayerGameJoinEvent;
@@ -9,6 +10,7 @@ import it.fedet.minigames.impl.sumo.game.SumoGame;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
+import org.spigotmc.event.player.PlayerSpawnLocationEvent;
 
 import java.util.List;
 
@@ -63,18 +65,18 @@ public class WaitingPlayerPhase extends MinigamePhase<Sumo> {
     @Override
     public GameListener<?>[] registerListeners() {
         return new GameListener[]{
-                new GameListener<PlayerGameJoinEvent>() {
+                new GameListener<PlayerSpawnLocationEvent>() {
 
                     @Override
-                    public Class<PlayerGameJoinEvent> getEventClass() {
-                        return PlayerGameJoinEvent.class;
+                    public Class<PlayerSpawnLocationEvent> getEventClass() {
+                        return PlayerSpawnLocationEvent.class;
                     }
 
                     @Override
-                    public void apply(PlayerGameJoinEvent event) {
+                    public void apply(PlayerSpawnLocationEvent event) {
                         System.out.println("Player joined the game in WaitingPlayerPhase");
-                        event.getPlayer().teleport(new Location(((SumoGame) event.getGame()).getGameWorld(), 8, 50, 8, 0, 0));
-                        System.out.println("Nuovo Mondo: " + event.getPlayer().getWorld().getName());
+                        System.out.println("Mondo nel game: " + ((SumoGame) game).getGameWorld().getName());
+                        event.setSpawnLocation(new Location(((SumoGame) game).getGameWorld(), 8, 50, 8, 0, 0));
                         System.out.println("Teleported player to game world spawn location");
                     }
                 }

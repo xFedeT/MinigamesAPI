@@ -3,7 +3,11 @@ plugins {
 }
 
 dependencies {
-    implementation(project(":api"))
+    compileOnly(project(":api"))
+    compileOnly(project(':classmodifier'))
+
+    implementation 'com.mojang:datafixerupper:1.0.20'
+    implementation 'org.javassist:javassist:3.30.2-GA'
     compileOnly fileTree(dir: '../libs', include: ['*.jar'])
 
 }
