@@ -8,7 +8,10 @@ import it.fedet.minigames.events.PlayerGameQuitEvent;
 import it.fedet.minigames.team.TeamService;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
-import org.bukkit.event.*;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.HandlerList;
+import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockEvent;
 import org.bukkit.event.enchantment.EnchantItemEvent;
 import org.bukkit.event.entity.EntityEvent;
@@ -22,12 +25,14 @@ import org.bukkit.event.world.WorldEvent;
 import org.bukkit.metadata.MetadataValue;
 import org.bukkit.plugin.RegisteredListener;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class GameService implements IGameService, Listener {
 
-    private MinigamesCore plugin;
+    private final MinigamesCore plugin;
 
     private final Map<Integer, Game<?>> activeGames = new ConcurrentHashMap<>();
 
@@ -47,7 +52,7 @@ public class GameService implements IGameService, Listener {
 
     @Override
     public it.fedet.minigames.api.services.TeamService getTeamService() {
-        return (TeamService) teamService;
+        return teamService;
     }
 
     @Override
@@ -86,7 +91,7 @@ public class GameService implements IGameService, Listener {
     }
 
     @Override
-    public void stop() {;
+    public void stop() {
         gameThread.interrupt();
         activeGames.values().forEach(Game::end);
     }

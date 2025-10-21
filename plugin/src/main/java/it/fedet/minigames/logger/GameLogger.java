@@ -12,15 +12,15 @@ public class GameLogger extends Logger {
      * and with useParentHandlers set to true.
      *
      * @param name               A name for the logger.  This should
-     *                           be a dot-separated name and should normally
-     *                           be based on the package name or class name
-     *                           of the subsystem, such as java.net
-     *                           or javax.swing.  It may be null for anonymous Loggers.
+     * be a dot-separated name and should normally
+     * be based on the package name or class name
+     * of the subsystem, such as java.net
+     * or javax.swing.  It may be null for anonymous Loggers.
      * @param resourceBundleName name of ResourceBundle to be used for localizing
-     *                           messages for this logger.  May be null if none
-     *                           of the messages require localization.
+     * messages for this logger.  May be null if none
+     * of the messages require localization.
      * @throws MissingResourceException if the resourceBundleName is non-null and
-     *                                  no corresponding resource can be found.
+     * no corresponding resource can be found.
      */
     private final static String PREFIX = "[MINIGAME - %LEVEL%] ";
 
@@ -62,7 +62,6 @@ public class GameLogger extends Logger {
     public void config(String msg) {
         super.config(PREFIX.replace("%LEVEL%", "CONFIG") + msg);
     }
-
 
 
     @Override

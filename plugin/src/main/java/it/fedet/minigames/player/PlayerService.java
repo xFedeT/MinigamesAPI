@@ -1,7 +1,6 @@
 package it.fedet.minigames.player;
 
 import it.fedet.minigames.MinigamesCore;
-import it.fedet.minigames.api.MinigamesAPI;
 import it.fedet.minigames.api.game.database.DatabaseProvider;
 import it.fedet.minigames.api.loadit.UserData;
 import it.fedet.minigames.api.services.IPlayerService;

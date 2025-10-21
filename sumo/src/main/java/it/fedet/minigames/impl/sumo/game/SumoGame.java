@@ -3,16 +3,16 @@ package it.fedet.minigames.impl.sumo.game;
 import it.fedet.minigames.api.game.Game;
 import it.fedet.minigames.api.game.GameStatus;
 import it.fedet.minigames.api.game.phase.MinigamePhase;
-import it.fedet.minigames.api.world.exception.CorruptedWorldException;
-import it.fedet.minigames.api.world.exception.NewerFormatException;
-import it.fedet.minigames.api.world.exception.UnknownWorldException;
-import it.fedet.minigames.api.world.exception.WorldInUseException;
+import it.fedet.minigames.api.swm.database.StorageType;
+import it.fedet.minigames.api.swm.exceptions.CorruptedWorldException;
+import it.fedet.minigames.api.swm.exceptions.NewerFormatException;
+import it.fedet.minigames.api.swm.exceptions.UnknownWorldException;
+import it.fedet.minigames.api.swm.exceptions.WorldInUseException;
 import it.fedet.minigames.impl.sumo.Sumo;
 import it.fedet.minigames.impl.sumo.game.phase.WaitingPlayerPhase;
-import it.fedet.minigames.utils.LoaderUtils;
-import it.fedet.minigames.world.nms.world.CraftSlimeWorld;
-import it.fedet.minigames.world.service.WorldService;
-import it.fedet.minigames.world.storage.StorageType;
+import it.fedet.minigames.swm.service.WorldService;
+import it.fedet.minigames.swm.service.loaders.LoaderUtils;
+import it.fedet.minigames.swm.nms.CraftSlimeWorld;
 import org.bukkit.World;
 
 import java.io.IOException;
@@ -27,9 +27,13 @@ public class SumoGame extends Game<Sumo> {
         WorldService worldService = plugin.getMinigamesAPI().getService(WorldService.class);
 
         try {
-            worldService.loadWorld(LoaderUtils.getLoader(StorageType.MONGODB), "sumo", CraftSlimeWorld.SlimeProperties.builder().build())
-                    .thenComposeAsync(slimeWorld -> worldService.generateWorld(slimeWorld)
-                            .thenAccept(world -> {
+                    worldService.generateWorld(
+                            worldService.loadWorld(
+                                        LoaderUtils.getLoader(StorageType.MONGODB),
+                                        "sumo",
+                                        CraftSlimeWorld.SlimeProperties.builder().ignoreLocked(true).readOnly(true).build()
+                            ).clone("game_" + gameId)
+                            ).thenAccept(world -> {
                                 this.gameWorld = world;
                                 setGameStatus(GameStatus.WAITING);
                                 plugin.getLogger().info("Game #" + getId() + " initialized with world: " + world.getName());
@@ -38,11 +42,7 @@ public class SumoGame extends Game<Sumo> {
                                 plugin.getLogger().severe("Failed to generate world sumo: " + e.getMessage());
                                 e.printStackTrace();
                                 return null;
-                            })).exceptionally(e -> {
-                        plugin.getLogger().severe("Failed to load world sumo: " + e.getMessage());
-                        e.printStackTrace();
-                        return null;
-                    });
+                            });
 
         } catch (UnknownWorldException | IOException | CorruptedWorldException | NewerFormatException |
                  WorldInUseException e) {

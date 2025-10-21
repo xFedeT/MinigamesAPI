@@ -3,7 +3,6 @@ package it.fedet.minigames.items;
 import com.viaversion.viaversion.libs.fastutil.Pair;
 import de.tr7zw.nbtapi.NBT;
 import it.fedet.minigames.MinigamesCore;
-import it.fedet.minigames.api.MinigamesAPI;
 import it.fedet.minigames.api.items.IItemService;
 import it.fedet.minigames.api.items.provider.ClickableItem;
 import it.fedet.minigames.api.items.provider.InteractItem;
@@ -54,7 +53,7 @@ public class ItemService implements Service, IItemService, Listener {
 
             if (result && item.isVanishAfterUse()) {
 
-                eventItem.setAmount(eventItem.getAmount()-1);
+                eventItem.setAmount(eventItem.getAmount() - 1);
                 player.playSound(player.getLocation(), item.getBreakSound(), 0.5F, 1);
             }
 
@@ -116,7 +115,7 @@ public class ItemService implements Service, IItemService, Listener {
     }
 
     @Override
-    public void registerItem(InteractItem ...items) {
+    public void registerItem(InteractItem... items) {
         Stream.of(items).forEach(item -> {
             if (customItems.containsKey(item.getId())) {
                 throw new IllegalArgumentException("Duplicate item id: " + item.getId());
@@ -138,7 +137,7 @@ public class ItemService implements Service, IItemService, Listener {
     }
 
     @Override
-    public void unregisterItems(InteractItem ...items) {
+    public void unregisterItems(InteractItem... items) {
         Stream.of(items).forEach(item -> customItems.remove(item.getId()));
     }
 }

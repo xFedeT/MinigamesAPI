@@ -57,7 +57,7 @@ public class TeamService implements it.fedet.minigames.api.services.TeamService 
             return true;
             //REGISTER AS SPECTATOR
         }
-       return false;
+        return false;
     }
 
     @Override

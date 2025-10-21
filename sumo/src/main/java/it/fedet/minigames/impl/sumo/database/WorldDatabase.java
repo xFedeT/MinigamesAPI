@@ -1,9 +1,9 @@
 package it.fedet.minigames.impl.sumo.database;
 
 
-import it.fedet.minigames.api.world.providers.WorldDbProvider;
-import it.fedet.minigames.api.world.storage.IStorageType;
-import it.fedet.minigames.world.storage.StorageType;
+import it.fedet.minigames.api.swm.database.StorageType;
+import it.fedet.minigames.api.swm.database.WorldDbProvider;
+
 
 public class WorldDatabase implements WorldDbProvider {
     @Override
@@ -37,7 +37,7 @@ public class WorldDatabase implements WorldDbProvider {
     }
 
     @Override
-    public IStorageType getType() {
+    public StorageType getStorageType() {
         return StorageType.MONGODB;
     }
 }

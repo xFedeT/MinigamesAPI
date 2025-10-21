@@ -1,4 +1,4 @@
 net/minecraft/server/v1_8_R3/MinecraftServer:
-  - a(java.lang.String, java.lang.String, long, net.minecraft.server.v1_8_R3.WorldType, java.lang.String)@MinecraftServer_loadWorlds.txt
+  - a(java.lang.String, java.lang.String, long, net.minecraft.server.v1_8_R3.WorldType, java.lang.String)@v1_8_R3/MinecraftServer_loadWorlds.txt
 org/bukkit/craftbukkit/v1_8_R3/CraftServer:
-  - addWorld(org.bukkit.World)@CraftServer_addWorld.txt
+  - addWorld(org.bukkit.World)@v1_8_R3/CraftServer_addWorld.txt

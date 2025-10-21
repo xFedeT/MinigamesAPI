@@ -1,7 +1,6 @@
 package it.fedet.minigames.events;
 
 import it.fedet.minigames.api.game.Game;
-import it.fedet.minigames.api.game.team.GameTeam;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.player.PlayerEvent;
