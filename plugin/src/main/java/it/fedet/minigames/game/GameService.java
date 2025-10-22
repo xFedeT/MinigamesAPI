@@ -2,6 +2,7 @@ package it.fedet.minigames.game;
 
 import it.fedet.minigames.MinigamesCore;
 import it.fedet.minigames.api.game.Game;
+import it.fedet.minigames.api.game.team.TeamManager;
 import it.fedet.minigames.api.services.IGameService;
 import it.fedet.minigames.team.TeamService;
 import org.bukkit.Chunk;
@@ -30,32 +31,25 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-/**
- * Template listener that exposes a method per concrete Bukkit event (1.8.8).
- * Each handler forwards the event to the corresponding game's current phase.
- *
- * Note: this is intentionally verbose: one handler method per event type.
- */
 public class GameService implements IGameService, Listener {
 
     private final MinigamesCore plugin;
     private final Map<Integer, Game<?>> activeGames = new ConcurrentHashMap<>();
-    private final TeamService teamService;
+    private final TeamManager teamManager;
     private final Thread gameThread = new Thread(() -> activeGames.forEach((id, game) -> game.tick()));
 
     public GameService(MinigamesCore plugin) {
         this.plugin = plugin;
 
-        teamService = new TeamService(
+        this.teamManager = new TeamService(
                 plugin,
-                plugin.getMinigame().registerTeamProvider().getMaxPlayerPerTeams(),
-                plugin.getMinigame().registerTeamProvider().getCriterias()
+                plugin.getMinigame().registerTeamProvider()
         );
     }
 
     @Override
-    public it.fedet.minigames.api.services.TeamService getTeamService() {
-        return teamService;
+    public TeamManager getTeamManager() {
+        return teamManager;
     }
 
     @Override
@@ -75,7 +69,7 @@ public class GameService implements IGameService, Listener {
         int id = game.getId();
         activeGames.put(id, game);
 
-        teamService.populateTeams(plugin.getMinigame().registerTeamProvider().teamQuantity(), id);
+        teamManager.initializeTeams(game);
         game.start();
     }
 
@@ -215,7 +209,5 @@ public class GameService implements IGameService, Listener {
 
         return null;
     }
-
-
 
 }

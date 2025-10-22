@@ -21,22 +21,14 @@ public class DistributionBase implements DistributionCriteria {
     }
 
     @Override
-    public <P extends JavaPlugin & Minigame<P>> DistributionResult distribute(Game<P> game, Player player, Collection<GameTeam> teams, int maxPlayersPerTeam, MinigamesAPI minigamesAPI) {
+    public <P extends JavaPlugin & Minigame<P>> Optional<GameTeam> distribute(Game<P> game, Player player, Collection<GameTeam> teams, int maxPlayersPerTeam, MinigamesAPI minigamesAPI) {
         if (teams == null || teams.isEmpty()) {
-            return DistributionResult.FAILURE;
+            return Optional.empty();
         }
 
-        Optional<GameTeam> teamOpt = teams.stream()
+        return teams.stream()
                 .filter(team -> team.getPlayers(PlayerStatus.INDIFFERENT).size() < maxPlayersPerTeam)
                 .min(Comparator.comparingInt(team -> team.getPlayers(PlayerStatus.INDIFFERENT).size()));
-
-        if (teamOpt.isPresent()) {
-            GameTeam team = teamOpt.get();
-            team.register(player, game.getPlugin());
-            return DistributionResult.SUCCESS;
-        } else {
-            return DistributionResult.FAILURE;
-        }
     }
 
     @Override

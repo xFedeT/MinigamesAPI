@@ -81,7 +81,7 @@ public class EndingPlayerPhase extends MinigamePhase<Sumo> {
 
                     @Override
                     public void apply(AsyncPlayerPreLoginEvent event) {
-                        CompletableFuture<Player> player = game.getPlugin().getDatabaseService().getPlayerData(event.getName());
+
                     }
                 }
         };

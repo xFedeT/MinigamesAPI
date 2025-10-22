@@ -9,6 +9,7 @@ import it.fedet.minigames.api.loadit.UserData;
 import it.fedet.minigames.api.loadit.impl.Loadit;
 import it.fedet.minigames.api.logging.Logging;
 import it.fedet.minigames.api.services.DatabaseService;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.intellij.lang.annotations.Language;
 
@@ -52,11 +53,11 @@ public abstract class DatabaseProvider<U extends UserData> implements DatabaseSe
 
     public abstract void runQuerys();
 
-    public abstract void createPlayer(String name);
+    public abstract void createPlayer(UUID uuid, String name);
 
-    public abstract boolean existsPlayer(String name);
+    public abstract boolean existsPlayer(UUID uuid, String name);
 
-    public abstract Optional<U> retrievePlayer(UUID name);
+    public abstract Optional<U> retrievePlayer(UUID uuid);
 
     public abstract Optional<U> retrievePlayer(String name);
 
@@ -70,29 +71,29 @@ public abstract class DatabaseProvider<U extends UserData> implements DatabaseSe
         }
 
         loadit = Loadit.createInstance((Plugin) plugin, getUserDataLoader());
+        loadit.init();
 
-        Logging.info(DatabaseService.class, "Attempting to connect to the database...");
-        try (Connection connection = getConnection()) {
-        } catch (SQLException e) {
-            e.printStackTrace();
-            Logging.error(DatabaseService.class, "Failed to connect to the database!");
-            return;
-        }
-        Logging.info(DatabaseService.class, "Connected to the database!");
+        prepareTables();
+        runQuerys();
+        Logging.info(DatabaseService.class, "Database service started!");
     }
 
     @Override
     public void stop() {
         dataSource.close();
+        Logging.info(DatabaseService.class, "Disconnected from the database!");
+        loadit.stop();
+        Logging.info(DatabaseService.class, "Database service stopped!");
+    }
+
+    public U getPlayer(Player player) {
+        return loadit.getContainer().getCached(player);
     }
 
     public abstract int setThreadCount();
 
     private Connection getConnection() throws SQLException {
-        try (Connection connection = dataSource.getConnection()) {
-            Logging.info(DatabaseService.class, "Successfully connected to the database!");
-            return connection;
-        }
+        return dataSource.getConnection();
     }
 
     public <T> CompletableFuture<T> executeAsyncQuery(@Language("SQL") String sql, ThrowableConsumer<PreparedStatement, SQLException> statement, Consumer<SQLException> exception, ThrowableFunction<ResultSet, T, SQLException> resultSet) {

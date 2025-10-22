@@ -1,6 +1,7 @@
 package it.fedet.minigames.api.services;
 
 import it.fedet.minigames.api.game.Game;
+import it.fedet.minigames.api.game.team.TeamManager;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 
@@ -9,7 +10,7 @@ import java.util.Map;
 public interface IGameService extends Service {
 
 
-    TeamService getTeamService();
+    TeamManager getTeamManager();
 
     void registerGame(Game<?> game);
 

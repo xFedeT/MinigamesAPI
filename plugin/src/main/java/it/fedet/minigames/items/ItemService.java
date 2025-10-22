@@ -1,12 +1,12 @@
 package it.fedet.minigames.items;
 
-import com.viaversion.viaversion.libs.fastutil.Pair;
 import de.tr7zw.nbtapi.NBT;
 import it.fedet.minigames.MinigamesCore;
 import it.fedet.minigames.api.items.IItemService;
 import it.fedet.minigames.api.items.provider.ClickableItem;
 import it.fedet.minigames.api.items.provider.InteractItem;
 import it.fedet.minigames.api.services.Service;
+import it.unimi.dsi.fastutil.Pair;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;

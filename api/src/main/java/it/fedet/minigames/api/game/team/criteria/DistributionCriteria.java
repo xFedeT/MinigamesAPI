@@ -10,6 +10,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public interface DistributionCriteria {
@@ -18,18 +19,18 @@ public interface DistributionCriteria {
 
     // Check first HIGHER teams in order to fill them
     DistributionFilter BASE_FILTER = teams -> teams.stream().filter(iTeam -> iTeam.getId() > -1)
-            .sorted((Comparator.comparingInt(GameTeam::countMembers)).reversed())
+            .sorted((Comparator.comparingInt(GameTeam::size)).reversed())
             .collect(Collectors.toList());
 
     default DistributionFilter getFilter() {
         return BASE_FILTER;
     }
 
-    <P extends JavaPlugin & Minigame<P>> DistributionResult distribute(Game<P> game,
-                                                                       Player player,
-                                                                       Collection<GameTeam> teams,
-                                                                       int maxPlayersPerTeam,
-                                                                       MinigamesAPI minigamesAPI);
+    <P extends JavaPlugin & Minigame<P>> Optional<GameTeam> distribute(Game<P> game,
+                                                             Player player,
+                                                             Collection<GameTeam> teams,
+                                                             int maxPlayersPerTeam,
+                                                             MinigamesAPI minigamesAPI);
 
     int getPriority();
 

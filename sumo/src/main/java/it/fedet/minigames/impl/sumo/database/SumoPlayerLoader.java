@@ -17,11 +17,7 @@ public class SumoPlayerLoader extends UserDataLoader<SumoPlayer> {
 
     @Override
     public Optional<SumoPlayer> getOrCreate(UUID uuid, String name) {
-        Optional<SumoPlayer> player = super.getOrCreate(uuid, name);
-
-        //DO SOMETHING
-
-        return player;
+        return super.getOrCreate(uuid, name);
     }
 
 }

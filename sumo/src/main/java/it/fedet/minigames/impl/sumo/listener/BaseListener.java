@@ -1,19 +1,20 @@
 package it.fedet.minigames.impl.sumo.listener;
 
 import it.fedet.minigames.api.game.Game;
-import it.fedet.minigames.api.services.TeamService;
+import it.fedet.minigames.api.game.team.TeamManager;
 import it.fedet.minigames.events.PlayerGameJoinEvent;
 import it.fedet.minigames.game.GameService;
 import it.fedet.minigames.impl.sumo.Sumo;
-import it.fedet.minigames.impl.sumo.game.SumoGame;
+import it.fedet.minigames.impl.sumo.config.ConfigFile;
+import it.fedet.minigames.impl.sumo.guis.ProvaGui;
+import it.fedet.minigames.impl.sumo.inventory.ProvaInventory;
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerInitialSpawnEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerLoginEvent;
+import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.metadata.FixedMetadataValue;
-import org.spigotmc.event.player.PlayerSpawnLocationEvent;
 
 public class BaseListener implements Listener {
 
@@ -25,15 +26,17 @@ public class BaseListener implements Listener {
 
     @EventHandler
     public void onJoin(PlayerJoinEvent event) {
-        TeamService teamService = plugin.getGameService().getTeamService();
+        TeamManager teamService = plugin.getGameService().getTeamManager();
         for (Game<?> game : plugin.getMinigamesAPI().getService(GameService.class).getActiveGames().values()) {
-            if (teamService.addIntoATeam(event.getPlayer(), game)) {
+            if (teamService.assignPlayerToTeam(event.getPlayer(), game)) {
                 event.getPlayer().setMetadata("game-id", new FixedMetadataValue(plugin, game.getId()));
                 Bukkit.getPluginManager().callEvent(new PlayerGameJoinEvent(event.getPlayer(), game));
                 break;
             }
         }
-    }
 
+        plugin.getMinigamesAPI().getInventory(ProvaInventory.class).apply(event.getPlayer());
+        event.setJoinMessage(plugin.getMinigamesAPI().getConfig(ConfigFile.class).getProperty(ConfigFile.SCRITTA));
+    }
 
 }

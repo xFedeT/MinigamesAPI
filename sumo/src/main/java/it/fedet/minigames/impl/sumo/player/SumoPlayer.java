@@ -7,7 +7,7 @@ import java.util.UUID;
 
 public class SumoPlayer extends UserData {
 
-    protected SumoPlayer(@NotNull UUID uuid, @NotNull String name) {
+    public SumoPlayer(@NotNull UUID uuid, @NotNull String name) {
         super(uuid, name);
     }
 }

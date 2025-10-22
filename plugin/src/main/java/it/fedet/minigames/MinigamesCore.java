@@ -3,6 +3,7 @@ package it.fedet.minigames;
 import ch.jalu.configme.SettingsHolder;
 import ch.jalu.configme.SettingsManager;
 import ch.jalu.configme.SettingsManagerBuilder;
+import fr.minuskube.inv.InventoryListener;
 import fr.minuskube.inv.InventoryManager;
 import fr.minuskube.inv.SmartInventory;
 import it.fedet.minigames.api.Minigame;
@@ -29,6 +30,7 @@ import it.fedet.minigames.world.service.WorldService;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Event;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.fusesource.jansi.Ansi;
 import revxrsal.commands.annotation.Command;
@@ -49,8 +51,7 @@ public final class MinigamesCore extends JavaPlugin implements MinigamesAPI {
     private final Map<Class<? extends GameCommand>, GameCommand> commands = new LinkedHashMap<>();
 
     private WorldDbProvider worldDbProvider;
-    private StorageType storageType;
-
+    private InventoryManager inventoryManager;
     private MinigamesCore instance;
 
 
@@ -71,6 +72,8 @@ public final class MinigamesCore extends JavaPlugin implements MinigamesAPI {
 
         Logging.info("MinigamesCore is starting...");
         MinigamesProvider.register(this);
+        inventoryManager = new InventoryManager(this);
+        inventoryManager.init();
     }
 
     public boolean registerConfig(List<MinigameConfig> configs) {
@@ -101,7 +104,7 @@ public final class MinigamesCore extends JavaPlugin implements MinigamesAPI {
                         .provider(gameGui)
                         .closeable(gameGui.isCloseable())
                         .type(gameGui.getInventoryType())
-                        .manager(new InventoryManager(this))
+                        .manager(inventoryManager)
                         .build()
         );
     }

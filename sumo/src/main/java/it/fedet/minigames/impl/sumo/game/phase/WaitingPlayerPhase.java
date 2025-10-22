@@ -7,8 +7,11 @@ import it.fedet.minigames.api.game.phase.MinigamePhase;
 import it.fedet.minigames.events.PlayerGameJoinEvent;
 import it.fedet.minigames.impl.sumo.Sumo;
 import it.fedet.minigames.impl.sumo.game.SumoGame;
+import it.fedet.minigames.impl.sumo.guis.ProvaGui;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
+import org.bukkit.event.player.PlayerInitialSpawnEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.spigotmc.event.player.PlayerSpawnLocationEvent;
 
 import java.util.List;

@@ -1,77 +1,108 @@
+// api/src/main/java/it/fedet/minigames/api/game/team/GameTeam.java
 package it.fedet.minigames.api.game.team;
 
-import it.fedet.minigames.api.Minigame;
 import it.fedet.minigames.api.game.player.PlayerStatus;
-import it.fedet.minigames.api.loadit.UserData;
 import org.bukkit.entity.Player;
-import org.bukkit.metadata.FixedMetadataValue;
-import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.Collection;
 import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.Consumer;
-import java.util.stream.Collectors;
 
 public abstract class GameTeam {
 
     private final int id;
-    private final int gameID;
-    protected final Map<Player, PlayerStatus> members = new ConcurrentHashMap<>();
+    private final int gameId;
+    protected final Map<UUID, PlayerStatus> members = new ConcurrentHashMap<>();
 
-    protected GameTeam(int id, int gameID) {
+    protected GameTeam(int id, int gameId) {
         this.id = id;
-        this.gameID = gameID;
+        this.gameId = gameId;
     }
 
-    public <P extends JavaPlugin & Minigame<P>> void register(Player player, P plugin) {
-        player.setMetadata("team_id", new FixedMetadataValue(plugin, id));
-        if (id == -1) {
-            members.put(player, PlayerStatus.SPECTATOR);
-        } else {
-            members.put(player, PlayerStatus.ALIVE);
+    /**
+     * Aggiunge un giocatore al team
+     */
+    public void addPlayer(Player player, PlayerStatus status) {
+        members.put(player.getUniqueId(), status);
+        onPlayerAdded(player, status);
+    }
+
+    /**
+     * Rimuove un giocatore dal team
+     */
+    public void removePlayer(Player player) {
+        PlayerStatus oldStatus = members.remove(player.getUniqueId());
+        if (oldStatus != null) {
+            onPlayerRemoved(player, oldStatus);
         }
     }
 
-    public <P extends JavaPlugin & Minigame<P>> void unregister(Player player, P plugin) {
-        if (player.hasMetadata("team_id") && player.getMetadata("team_id").get(0).asInt() == id) {
-            player.removeMetadata("team_id", plugin);
-            members.remove(player);
+    /**
+     * Aggiorna lo status di un giocatore
+     */
+    public void updatePlayerStatus(Player player, PlayerStatus newStatus) {
+        PlayerStatus oldStatus = members.put(player.getUniqueId(), newStatus);
+        if (oldStatus != newStatus) {
+            onPlayerStatusChanged(player, oldStatus, newStatus);
         }
+    }
+
+    /**
+     * Ottiene lo status di un giocatore
+     */
+    public PlayerStatus getPlayerStatus(UUID playerId) {
+        return members.getOrDefault(playerId, null);
+    }
+
+    /**
+     * Verifica se un giocatore è nel team
+     */
+    public boolean hasPlayer(UUID playerId) {
+        return members.containsKey(playerId);
+    }
+
+    /**
+     * Ottiene tutti i giocatori con un certo status
+     */
+    public Collection<UUID> getPlayers(PlayerStatus status) {
+        if (status == PlayerStatus.INDIFFERENT) {
+            return members.keySet();
+        }
+        return members.entrySet().stream()
+                .filter(entry -> entry.getValue() == status)
+                .map(Map.Entry::getKey)
+                .toList();
+    }
+
+    /**
+     * Conta i membri del team
+     */
+    public int size() {
+        return members.size();
+    }
+
+    /**
+     * Verifica se il team è vuoto
+     */
+    public boolean isEmpty() {
+        return members.isEmpty();
     }
 
     public int getId() {
         return id;
     }
 
-    public boolean isInTeam(UserData player) {
-        return members.containsKey(player);
+    public int getGameId() {
+        return gameId;
     }
 
-
-    public Collection<Player> getPlayers(PlayerStatus status) {
-        return members.keySet().stream()
-                .filter(userData -> status == PlayerStatus.INDIFFERENT || members.get(userData) == status)
-                .filter(player -> player.hasMetadata("game-id") && player.getMetadata("game-id").get(0).asInt() == gameID)
-                .collect(Collectors.toSet());
+    public boolean isSpectatorTeam() {
+        return id == -1;
     }
 
-    public void forEachOnlineTeamPlayer(Consumer<Player> consumer) {
-        getPlayers(PlayerStatus.ALIVE).forEach(consumer);
-    }
-
-    public boolean isInTeam(Player player) {
-        for (Player member : members.keySet()) {
-            if (member.getName().equalsIgnoreCase(player.getName()))
-                return true;
-        }
-
-        return false;
-    }
-
-    public int countMembers() {
-        return members.size();
-    }
-
-
+    // Hook methods per le sottoclassi
+    protected void onPlayerAdded(Player player, PlayerStatus status) {}
+    protected void onPlayerRemoved(Player player, PlayerStatus oldStatus) {}
+    protected void onPlayerStatusChanged(Player player, PlayerStatus oldStatus, PlayerStatus newStatus) {}
 }

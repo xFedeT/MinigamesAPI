@@ -1,8 +1,8 @@
 package it.fedet.minigames.api.items.provider;
 
-import com.viaversion.viaversion.libs.fastutil.Pair;
-import com.viaversion.viaversion.libs.fastutil.objects.Object2ObjectArrayMap;
 import de.tr7zw.nbtapi.NBT;
+import it.unimi.dsi.fastutil.Pair;
+import it.unimi.dsi.fastutil.objects.Object2ObjectArrayMap;
 import org.bukkit.event.Event;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;

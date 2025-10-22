@@ -78,7 +78,7 @@ subprojects {
 
         compileOnly "org.github.paperspigot:paperspigot-api:1.8.8-R0.1-SNAPSHOT"
         implementation "net.kyori:adventure-platform-bukkit:4.1.2"
-        compileOnly 'com.viaversion:viaversion-api:4.9.3-SNAPSHOT'
+        implementation 'it.unimi.dsi:fastutil:8.5.18'
         compileOnly 'org.itsallcode:holiday-calculator:0.2.0'
 
 

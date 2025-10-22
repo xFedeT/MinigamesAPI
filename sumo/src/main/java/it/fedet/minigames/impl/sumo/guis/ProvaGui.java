@@ -31,12 +31,12 @@ public class ProvaGui extends GameGui<Sumo> {
 
     @Override
     public int getRows() {
-        return 10;
+        return 6;
     }
 
     @Override
     public int getColumns() {
-        return 21;
+        return 9;
     }
 
     @Override
