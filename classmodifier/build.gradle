@@ -1,0 +1,27 @@
+plugins {
+    id("com.github.johnrengelman.shadow") version "7.1.2"
+}
+
+dependencies {
+
+    implementation 'com.mojang:datafixerupper:1.0.20'
+    implementation 'org.javassist:javassist:3.30.2-GA'
+}
+
+
+tasks {
+    assemble {
+        dependsOn(shadowJar)
+    }
+    shadowJar {
+        manifest {
+            attributes(
+                    'Premain-Class': 'it.fedet.minigames.classmodifier.NMSTransformer',
+                    'Can-Redefine-Classes': 'true',
+                    'Can-Retransform-Classes': 'true'
+            )
+        }
+
+        archiveFileName = "MinigamesAPI-CLASSMODIFIER-${project.version}.jar"
+    }
+}

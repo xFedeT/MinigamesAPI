@@ -1,4 +1,5 @@
 rootProject.name = 'MinigamesAPI'
 
 include 'api'
+include 'classmodifier'
 include 'plugin'

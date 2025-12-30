@@ -23,15 +23,19 @@ public abstract class Game<P extends JavaPlugin & Minigame<P>> {
         currentPhase.tick();
     }
 
+    public abstract void start();
+
     public void next() {
         if (currentPhase == null)
             return;
 
-        currentPhase.end();
+        currentPhase.endPhase();
 
         currentPhase = currentPhase.getNextPhase();
-        currentPhase.start();
+        currentPhase.startPhase();
     }
+
+    public abstract void end();
 
     public int getId() {
         return gameId;
@@ -53,5 +57,9 @@ public abstract class Game<P extends JavaPlugin & Minigame<P>> {
 
     public MinigamePhase<P> getCurrentPhase() {
         return currentPhase;
+    }
+
+    public void setCurrentPhase(MinigamePhase<P> currentPhase) {
+        this.currentPhase = currentPhase;
     }
 }

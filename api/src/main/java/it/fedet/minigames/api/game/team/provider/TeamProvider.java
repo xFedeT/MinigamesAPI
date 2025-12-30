@@ -1,23 +1,35 @@
+// api/src/main/java/it/fedet/minigames/api/game/team/provider/TeamProvider.java
 package it.fedet.minigames.api.game.team.provider;
 
 import it.fedet.minigames.api.game.team.GameTeam;
 import it.fedet.minigames.api.game.team.criteria.DistributionCriteria;
-import org.bukkit.entity.Player;
 
 import java.util.List;
 
 public interface TeamProvider {
 
-    void onAddInTeam(Player player, GameTeam team);
+    /**
+     * Crea una nuova istanza di team
+     */
+    GameTeam createTeam(int teamId, int gameId);
 
-    void onRemoveInTeam(Player player, GameTeam team);
+    /**
+     * Crea una nuova istanza di team spettatore
+     */
+    GameTeam createSpectatorTeam(int teamId, int gameId);
 
-    GameTeam getTeamInstance(int id, int gameID);
+    /**
+     * Numero di team da creare per ogni game
+     */
+    int getTeamCount();
 
-    int getMaxPlayerPerTeams();
+    /**
+     * Numero massimo di giocatori per team
+     */
+    int getMaxPlayersPerTeam();
 
-    List<DistributionCriteria> getCriterias();
-
-    int teamQuantity();
-
+    /**
+     * Strategia di assegnazione dei giocatori ai team
+     */
+    List<DistributionCriteria> getAssignmentStrategy();
 }

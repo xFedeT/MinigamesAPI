@@ -9,6 +9,7 @@ import java.util.Optional;
 public interface IItemService {
 
     <T extends InteractItem> InteractItem getItem(Class<T> clazz);
+
     InteractItem getItem(String id);
 
     void removeItem(String id);
@@ -17,8 +18,10 @@ public interface IItemService {
 
     void removeItem(ItemStack item);
 
-    void registerItem(InteractItem...items);
+    void registerItem(InteractItem... items);
+
     void registerItems(List<InteractItem> items);
-    void unregisterItems(InteractItem ...items);
+
+    void unregisterItems(InteractItem... items);
 
 }

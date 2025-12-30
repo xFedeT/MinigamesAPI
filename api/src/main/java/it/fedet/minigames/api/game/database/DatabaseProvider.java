@@ -7,7 +7,9 @@ import it.fedet.minigames.api.function.ThrowableFunction;
 import it.fedet.minigames.api.game.database.loader.UserDataLoader;
 import it.fedet.minigames.api.loadit.UserData;
 import it.fedet.minigames.api.loadit.impl.Loadit;
+import it.fedet.minigames.api.logging.Logging;
 import it.fedet.minigames.api.services.DatabaseService;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.intellij.lang.annotations.Language;
 
@@ -51,33 +53,47 @@ public abstract class DatabaseProvider<U extends UserData> implements DatabaseSe
 
     public abstract void runQuerys();
 
-    public abstract void createPlayer(String name);
+    public abstract void createPlayer(UUID uuid, String name);
 
-    public abstract boolean existsPlayer(String name);
+    public abstract boolean existsPlayer(UUID uuid, String name);
 
-    public abstract Optional<U> retrievePlayer(UUID name);
+    public abstract Optional<U> retrievePlayer(UUID uuid);
 
     public abstract Optional<U> retrievePlayer(String name);
 
     @Override
     public void start() {
+        Logging.info(DatabaseService.class, "Starting database service...");
         dataSource.setJdbcUrl(getJdbcURL());
         dataSource.setUsername(getUser());
-        dataSource.setPassword(getPassword());
+        if (!getPassword().isEmpty()) {
+            dataSource.setPassword(getPassword());
+        }
+
         loadit = Loadit.createInstance((Plugin) plugin, getUserDataLoader());
+        loadit.init();
+
+        prepareTables();
+        runQuerys();
+        Logging.info(DatabaseService.class, "Database service started!");
     }
 
     @Override
     public void stop() {
         dataSource.close();
+        Logging.info(DatabaseService.class, "Disconnected from the database!");
+        loadit.stop();
+        Logging.info(DatabaseService.class, "Database service stopped!");
+    }
+
+    public U getPlayer(Player player) {
+        return loadit.getContainer().getCached(player);
     }
 
     public abstract int setThreadCount();
 
     private Connection getConnection() throws SQLException {
-        try (Connection connection = dataSource.getConnection()) {
-            return connection;
-        }
+        return dataSource.getConnection();
     }
 
     public <T> CompletableFuture<T> executeAsyncQuery(@Language("SQL") String sql, ThrowableConsumer<PreparedStatement, SQLException> statement, Consumer<SQLException> exception, ThrowableFunction<ResultSet, T, SQLException> resultSet) {

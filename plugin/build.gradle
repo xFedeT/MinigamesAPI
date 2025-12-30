@@ -4,6 +4,12 @@ plugins {
 
 dependencies {
     implementation(project(":api"))
+    compileOnly(project(':classmodifier'))
+
+    implementation 'com.mojang:datafixerupper:1.0.20'
+    implementation 'org.javassist:javassist:3.30.2-GA'
+    compileOnly fileTree(dir: '../libs', include: ['*.jar'])
+
 }
 
 processResources {
@@ -18,7 +24,9 @@ tasks {
         dependsOn(shadowJar)
     }
     shadowJar {
+        relocate 'org.yaml.snakeyaml', 'it.fedet.minigames.lib.snakeyaml'
         relocate 'com.zaxxer', 'it.fedet.minigames.lib.hikari'
+
         archiveFileName = "MinigamesAPI-PLUGIN-${project.version}.jar"
     }
 }

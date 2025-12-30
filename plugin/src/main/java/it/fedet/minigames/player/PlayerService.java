@@ -1,6 +1,6 @@
 package it.fedet.minigames.player;
 
-import it.fedet.minigames.api.MinigamesAPI;
+import it.fedet.minigames.MinigamesCore;
 import it.fedet.minigames.api.game.database.DatabaseProvider;
 import it.fedet.minigames.api.loadit.UserData;
 import it.fedet.minigames.api.services.IPlayerService;
@@ -12,9 +12,9 @@ import java.util.concurrent.CompletableFuture;
 
 public class PlayerService<U extends UserData> implements IPlayerService<U> {
 
-    private final MinigamesAPI plugin;
+    private final MinigamesCore plugin;
 
-    protected PlayerService(MinigamesAPI plugin) {
+    public PlayerService(MinigamesCore plugin) {
         this.plugin = plugin;
     }
 

@@ -39,6 +39,7 @@ subprojects {
             name = 'papermc-repo'
             url = 'https://repo.papermc.io/repository/maven-public/'
         }
+        maven { url = 'https://repo.glaremasters.me/repository/public/' }
         maven { url = 'https://repo.codemc.org/repository/maven-public/' }
         maven { url = 'https://jitpack.io' }
         maven { url = 'https://repo.dmulloy2.net/repository/public/' }
@@ -49,14 +50,20 @@ subprojects {
     }
 
     dependencies {
+
         api 'fr.minuskube.inv:smart-invs:1.2.7' transitive false
         api 'xyz.xenondevs:particle:1.8.1'
 
 
-        compileOnly 'ch.jalu:configme:1.4.1'
         compileOnly 'net.luckperms:api:5.4'
         compileOnly 'com.github.decentsoftware-eu:decentholograms:2.8.6'
 
+        implementation 'org.yaml:snakeyaml:2.0'
+        implementation("ch.jalu:configme:1.4.1") {
+            exclude group: "org.yaml", module: "snakeyaml"
+        }
+        implementation "com.github.luben:zstd-jni:1.4.1-1"
+        implementation 'com.flowpowered:flow-nbt:2.0.0'
         implementation "de.tr7zw:item-nbt-api-plugin:2.15.1"
         implementation 'com.github.Revxrsal.Lamp:bukkit:3.2.1'
         implementation 'com.github.Revxrsal.Lamp:common:3.2.1'
@@ -68,11 +75,10 @@ subprojects {
         implementation 'com.zaxxer:HikariCP:5.0.1'
         implementation 'org.mongodb:mongodb-driver-sync:4.11.1'
         implementation 'org.mariadb.jdbc:mariadb-java-client:3.2.0'
-        implementation 'com.github.juliarn:npc-lib:2.5-RELEASE'
 
         compileOnly "org.github.paperspigot:paperspigot-api:1.8.8-R0.1-SNAPSHOT"
-        compileOnly "net.kyori:adventure-platform-bukkit:4.1.2"
-        compileOnly 'com.viaversion:viaversion-api:4.9.3-SNAPSHOT'
+        implementation "net.kyori:adventure-platform-bukkit:4.1.2"
+        implementation 'it.unimi.dsi:fastutil:8.5.18'
         compileOnly 'org.itsallcode:holiday-calculator:0.2.0'
 
 

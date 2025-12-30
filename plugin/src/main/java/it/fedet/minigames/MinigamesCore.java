@@ -3,6 +3,8 @@ package it.fedet.minigames;
 import ch.jalu.configme.SettingsHolder;
 import ch.jalu.configme.SettingsManager;
 import ch.jalu.configme.SettingsManagerBuilder;
+import fr.minuskube.inv.InventoryListener;
+import fr.minuskube.inv.InventoryManager;
 import fr.minuskube.inv.SmartInventory;
 import it.fedet.minigames.api.Minigame;
 import it.fedet.minigames.api.MinigamesAPI;
@@ -12,16 +14,25 @@ import it.fedet.minigames.api.game.database.DatabaseProvider;
 import it.fedet.minigames.api.game.inventory.InventorySnapshot;
 import it.fedet.minigames.api.gui.GameGui;
 import it.fedet.minigames.api.items.GameInventory;
+import it.fedet.minigames.api.logging.Logging;
 import it.fedet.minigames.api.provider.MinigamesProvider;
+import it.fedet.minigames.api.services.IWorldService;
 import it.fedet.minigames.api.services.Service;
+import it.fedet.minigames.api.world.database.StorageType;
+import it.fedet.minigames.api.world.database.WorldDbProvider;
 import it.fedet.minigames.board.ScoreboardService;
 import it.fedet.minigames.commands.CommandService;
 import it.fedet.minigames.commands.exception.NotLampCommandClassException;
+import it.fedet.minigames.game.GameService;
 import it.fedet.minigames.items.ItemService;
 import it.fedet.minigames.player.PlayerService;
+import it.fedet.minigames.world.service.WorldService;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Event;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.fusesource.jansi.Ansi;
 import revxrsal.commands.annotation.Command;
 
 import java.io.File;
@@ -39,12 +50,30 @@ public final class MinigamesCore extends JavaPlugin implements MinigamesAPI {
     private final Map<Class<? extends GameInventory>, GameInventory> inventorys = new LinkedHashMap<>();
     private final Map<Class<? extends GameCommand>, GameCommand> commands = new LinkedHashMap<>();
 
+    private WorldDbProvider worldDbProvider;
+    private InventoryManager inventoryManager;
     private MinigamesCore instance;
+
 
     @Override
     public void onEnable() {
-        MinigamesProvider.register(this);
         instance = this;
+
+        Logging.info(ChatColor.DARK_AQUA + "+---------------------------------------------------------------------+");
+        Logging.info(ChatColor.DARK_AQUA + "|  __  __ _       _                                    _    ____ ___  |");
+        Logging.info(ChatColor.DARK_AQUA + "| |  \\/  (_)_ __ (_) __ _  __ _ _ __ ___   ___  ___   / \\  |  _ \\_ _| |");
+        Logging.info(ChatColor.DARK_AQUA + "| | |\\/| | | '_ \\| |/ _` |/ _` | '_ ` _ \\ / _ \\/ __| / _ \\ | |_) | |  |");
+        Logging.info(ChatColor.DARK_AQUA + "| | |  | | | | | | | (_| | (_| | | | | | |  __/\\__ \\/ ___ \\|  __/| |  |");
+        Logging.info(ChatColor.DARK_AQUA + "| |_|  |_|_|_| |_|_|\\__, |\\__,_|_| |_| |_|\\___||___/_/   \\_\\_|  |___| |");
+        Logging.info(ChatColor.DARK_AQUA + "|                   |___/                                             |");
+        Logging.info(ChatColor.DARK_AQUA + "| " + ChatColor.RESET + "Author: " + ChatColor.WHITE + "xFedeT_                                                     " + ChatColor.DARK_AQUA + "|");
+        Logging.info(ChatColor.DARK_AQUA + "| " + ChatColor.RESET + "Version: " + ChatColor.WHITE + "v1.0.0                                                     " + ChatColor.DARK_AQUA + "|");
+        Logging.info(ChatColor.DARK_AQUA + "+---------------------------------------------------------------------+");
+
+        Logging.info("MinigamesCore is starting...");
+        MinigamesProvider.register(this);
+        inventoryManager = new InventoryManager(this);
+        inventoryManager.init();
     }
 
     public boolean registerConfig(List<MinigameConfig> configs) {
@@ -52,7 +81,7 @@ public final class MinigamesCore extends JavaPlugin implements MinigamesAPI {
             for (MinigameConfig setting : configs) {
                 files.put(setting.getClazz(), SettingsManagerBuilder
                         .withYamlFile(
-                                new File(getDataFolder().getAbsolutePath() + setting.getPath(), setting.getFileName())
+                                new File(getDataFolder().getAbsolutePath() + setting.getPath(), setting.getFileName() + ".yml")
                         )
                         .configurationData(setting.getClazz())
                         .useDefaultMigrationService()
@@ -75,8 +104,16 @@ public final class MinigamesCore extends JavaPlugin implements MinigamesAPI {
                         .provider(gameGui)
                         .closeable(gameGui.isCloseable())
                         .type(gameGui.getInventoryType())
+                        .manager(inventoryManager)
                         .build()
         );
+    }
+
+    @Override
+    public <P extends WorldDbProvider> void registerWorldDbProvider(P worldDbProvider) {
+        Logging.info("Registering World DB Provider...");
+        this.worldDbProvider = worldDbProvider;
+        Logging.info("World DB Provider registered successfully!");
     }
 
     @Override
@@ -110,19 +147,19 @@ public final class MinigamesCore extends JavaPlugin implements MinigamesAPI {
     }
 
     @Override
-    public <D extends DatabaseProvider> boolean registerDatabaseProvider(D provider) {
-        try {
-            services.put(DatabaseProvider.class, provider);
-            provider.start();
-            return true;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
+    public <D extends DatabaseProvider<?>> void registerDatabaseProvider(D provider) {
+        Logging.info("Registering database provider...");
+        services.put(provider.getClass(), provider);
+        Logging.info("Database provider registered successfully!");
+
+        provider.start();
     }
 
     @Override
     public <P extends Minigame<P>> void registerMinigame(Minigame<P> minigame) {
+        Logging.infoGame(minigame.getClass(), "Registering minigame: " + minigame.getClass().getSimpleName());
+        this.minigame = minigame;
+
         //Loading all services
         for (Class<?> service : getServices()) {
             try {
@@ -130,30 +167,38 @@ public final class MinigamesCore extends JavaPlugin implements MinigamesAPI {
                     throw new RuntimeException();
 
                 Service object = (Service) service.getConstructor(MinigamesCore.class).newInstance(this);
+
+                if (object instanceof IWorldService) {
+                    ((IWorldService) object).setProvider(worldDbProvider);
+                }
+
                 object.start();
 
                 services.put((Class<? extends Service>) service, object);
-                getLogger().info("Loaded a new service: " + service.getSimpleName());
+                Logging.infoGame(minigame.getClass(), "Loaded a new service: " + service.getSimpleName());
             } catch (Exception e) {
                 e.printStackTrace();
-                getLogger().info("Cannot load a service: " + service.getSimpleName());
-                getLogger().info("Instance shutdown...");
+                Logging.infoGame(minigame.getClass(), "Cannot load a service: " + service.getSimpleName());
+                Logging.infoGame(minigame.getClass(), "Instance shutdown...");
                 Bukkit.shutdown();
                 return;
             }
         }
 
-
-        this.minigame = minigame;
+        Logging.infoGame(minigame.getClass(), "Registering configurations...");
         registerConfig(minigame.registerConfigs());
 
         //registering gui
+        Logging.infoGame(minigame.getClass(), "Registering GUIs...");
         minigame.registerGuis().forEach(this::registerGui);
 
+
         //Saving Inventorys
+        Logging.infoGame(minigame.getClass(), "Registering inventories...");
         inventorys.putAll(minigame.registerInventorys());
 
         //Register Command
+        Logging.infoGame(minigame.getClass(), "Registering commands...");
         minigame.registerCommands().forEach((clazz, command) -> {
             if (command.getClass().isAnnotationPresent(Command.class)) {
                 commands.put(clazz, command);
@@ -168,6 +213,8 @@ public final class MinigamesCore extends JavaPlugin implements MinigamesAPI {
 
         services.put(CommandService.class, new CommandService(this));
         getService(CommandService.class).start();
+
+        Logging.infoGame(minigame.getClass(), "Minigame registered successfully!");
     }
 
     @Override
@@ -185,9 +232,12 @@ public final class MinigamesCore extends JavaPlugin implements MinigamesAPI {
 
     private Class<?>[] getServices() {
         return new Class<?>[]{
+                //DatabaseService.class,
                 PlayerService.class,
                 ItemService.class,
-                ScoreboardService.class
+                ScoreboardService.class,
+                GameService.class,
+                WorldService.class
         };
     }
 

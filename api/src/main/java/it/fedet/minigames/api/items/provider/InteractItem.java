@@ -22,7 +22,9 @@ public abstract class InteractItem {
     }
 
     public abstract String getId();
+
     protected abstract ItemStack getItem();
+
     public abstract boolean onInteract(PlayerInteractEvent event);
 
     public boolean isCancelled() {
