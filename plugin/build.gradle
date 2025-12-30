@@ -19,6 +19,6 @@ tasks {
     }
     shadowJar {
         relocate 'com.zaxxer', 'it.fedet.minigames.lib.hikari'
-        archiveFileName = "MinigamesAPI-${project.version}.jar"
+        archiveFileName = "MinigamesAPI-PLUGIN-${project.version}.jar"
     }
 }

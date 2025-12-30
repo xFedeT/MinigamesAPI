@@ -6,6 +6,12 @@ tasks.register('sourceJar', Jar) {
     from sourceSets.main.allJava
 }
 
+tasks {
+    jar {
+        archiveFileName = "MinigamesAPI-API-${project.version}.jar"
+    }
+}
+
 publishing {
     def artifact = "MinigameAPI"
     def group = 'com.github.xFedeT'
