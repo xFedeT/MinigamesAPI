@@ -1,7 +1,0 @@
-name: Sumo
-version: '${version}'
-main: it.fedet.minigames.impl.sumo.Sumo
-prefix: MinigamesCore
-authors: [ xFedeT ]
-depend:
-  - MinigamesCore

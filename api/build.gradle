@@ -6,9 +6,15 @@ tasks.register('sourceJar', Jar) {
     from sourceSets.main.allJava
 }
 
+tasks {
+    jar {
+        archiveFileName = "MinigamesAPI-API-${project.version}.jar"
+    }
+}
+
 publishing {
     def artifact = "MinigameAPI"
-    def group = 'com.github.xFedeT'
+    def group = 'it.fedet.minigames.api'
 
     publications {
         maven(MavenPublication) {
@@ -17,6 +23,23 @@ publishing {
             version
 
             from components.java
+        }
+    }
+
+    repositories {
+        maven {
+            url = "https://repo.codemc.io/repository/xfedet/" //
+
+            //
+            def mavenUsername = System.getenv("JENKINS_USERNAME")
+            def mavenPassword = System.getenv("JENKINS_PASSWORD")
+
+            if (mavenUsername != null && mavenPassword != null) {
+                credentials {
+                    username = mavenUsername
+                    password = mavenPassword
+                }
+            }
         }
     }
 }
