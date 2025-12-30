@@ -65,4 +65,4 @@ public class YourPlugin extends JavaPlugin implements Minigame {
 :pencil: Read the full documentation in the [MinigamesAPI Wiki](https://github.com/xFedeT/MinigamesAPI/wiki).
 
 :pencil: See a full working example based on this
-[here](https://github.com/xFedeT/MinigamesAPI/tree/main/sumo).
+[here](https://github.com/xFedeT/MinigamesAPI/tree/example/).
