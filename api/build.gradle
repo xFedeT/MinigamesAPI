@@ -25,4 +25,21 @@ publishing {
             from components.java
         }
     }
+
+    repositories {
+        maven {
+            url = "https://repo.codemc.io/repository/{username}/" //
+
+            //
+            def mavenUsername = System.getenv("GRADLE_PROJECT_MAVEN_USERNAME")
+            def mavenPassword = System.getenv("GRADLE_PROJECT_MAVEN_PASSWORD")
+
+            if (mavenUsername != null && mavenPassword != null) {
+                credentials {
+                    username = mavenUsername
+                    password = mavenPassword
+                }
+            }
+        }
+    }
 }
