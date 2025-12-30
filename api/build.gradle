@@ -8,7 +8,7 @@ tasks.register('sourceJar', Jar) {
 
 tasks {
     jar {
-        archiveFileName = "MinigamesAPI-API-${project.version}.jar"
+        archiveFileName = "AMinigamesAPI-API-${project.version}.jar"
     }
 }
 
