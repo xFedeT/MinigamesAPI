@@ -74,7 +74,14 @@ pipeline {
         }
 
         always {
-            archiveArtifacts artifacts: '**/build/libs/*.jar', fingerprint: true
+            script {
+                def jars = findFiles(glob: '**/build/libs/*.jar')
+                if (jars.length > 0) {
+                    archiveArtifacts artifacts: '**/build/libs/*.jar', fingerprint: true
+                } else {
+                    echo 'ℹ️ Nessun JAR da archiviare'
+                }
+            }
             cleanWs()
         }
     }
