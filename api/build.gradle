@@ -28,7 +28,7 @@ publishing {
 
     repositories {
         maven {
-            url = "https://repo.codemc.io/repository/{username}/" //
+            url = "https://repo.codemc.io/repository/xfedet/" //
 
             //
             def mavenUsername = System.getenv("GRADLE_PROJECT_MAVEN_USERNAME")
