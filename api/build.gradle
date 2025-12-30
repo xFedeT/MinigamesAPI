@@ -14,7 +14,7 @@ tasks {
 
 publishing {
     def artifact = "MinigameAPI"
-    def group = 'com.github.xFedeT'
+    def group = 'it.fedet.minigames.api'
 
     publications {
         maven(MavenPublication) {
