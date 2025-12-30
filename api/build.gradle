@@ -26,17 +26,10 @@ publishing {
 
     repositories {
         maven {
-            url = "https://repo.codemc.io/repository/xfedet/" //
-
-            //
-            def mavenUsername = System.getenv("JENKINS_USERNAME")
-            def mavenPassword = System.getenv("JENKINS_PASSWORD")
-
-            if (mavenUsername != null && mavenPassword != null) {
-                credentials {
-                    username = mavenUsername
-                    password = mavenPassword
-                }
+            url = "https://repo.codemc.io/repository/xfedet/"
+            credentials {
+                username = System.getenv("JENKINS_USERNAME")
+                password = System.getenv("JENKINS_PASSWORD")
             }
         }
     }

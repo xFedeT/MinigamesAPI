@@ -9,6 +9,7 @@ subprojects {
 
     allprojects {
         version = ver
+        group = "it.fedet.minigames.api"
 
         semver {
             releaseTagNameFormat = "v%s"
