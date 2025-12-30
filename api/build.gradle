@@ -31,8 +31,8 @@ publishing {
             url = "https://repo.codemc.io/repository/xfedet/" //
 
             //
-            def mavenUsername = System.getenv("GRADLE_PROJECT_MAVEN_USERNAME")
-            def mavenPassword = System.getenv("GRADLE_PROJECT_MAVEN_PASSWORD")
+            def mavenUsername = System.getenv("JENKINS_USERNAME")
+            def mavenPassword = System.getenv("JENKINS_PASSWORD")
 
             if (mavenUsername != null && mavenPassword != null) {
                 credentials {
