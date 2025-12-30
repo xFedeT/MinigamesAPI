@@ -1,70 +1,32 @@
 plugins {
     id 'maven-publish'
-    id 'com.github.johnrengelman.shadow' version '8.1.1'
 }
 
-java {
-    toolchain {
-        languageVersion = JavaLanguageVersion.of(17)
+tasks.register('sourceJar', Jar) {
+    from sourceSets.main.allJava
+}
+
+tasks {
+    jar {
+        archiveFileName = "MinigamesAPI-API-${project.version}.jar"
     }
-    withSourcesJar()
-}
-
-repositories {
-    mavenCentral()
-}
-
-tasks.withType(JavaCompile).configureEach {
-    options.encoding = 'UTF-8'
-}
-
-shadowJar {
-    archiveClassifier.set('')
-    archiveFileName.set("MinigamesAPI-API-${project.version}.jar")
-}
-
-jar {
-    archiveClassifier.set('raw')
-    dependsOn shadowJar
-}
-
-artifacts {
-    archives shadowJar
 }
 
 publishing {
+
     publications {
         maven(MavenPublication) {
             groupId = project.group
-            artifactId = project.name
+            artifactId = "MinigameAPI"
             version = project.version
 
             from components.java
-
-            pom {
-                name = project.name
-                description = "A powerful and flexible Minecraft plugin API/framework designed for creating custom minigames with ease."
-                url = 'https://github.com/xFedeT/MinigamesAPI'
-
-                licenses {
-                    license {
-                        name = 'MIT'
-                        url = 'https://github.com/xFedeT/MinigamesAPI/blob/main/LICENSE.md'
-                    }
-                }
-            }
         }
     }
 
     repositories {
         maven {
-            url = uri(
-                    project.findProperty("repositoryURL")
-                            ?: "https://repo.codemc.io/repository/xfedet/"
-            )
-
-            allowInsecureProtocol = true
-
+            url = "https://repo.codemc.io/repository/xfedet/"
             credentials {
                 username = System.getenv("JENKINS_USERNAME")
                 password = System.getenv("JENKINS_PASSWORD")
